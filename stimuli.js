@@ -32,66 +32,14 @@ var stimuli = [
 		 	 ,y: 50
 		 	 ,color: 'lawngreen'
 			}
-		 ,{
-		 		type: 'triangle'
-		 	 ,size: 'x-large'
-		 	 ,x: 200
-		 	 ,y: 500
-		 	 ,rotation: 30
-		 	 ,color: 'lightseagreen'
-		 	}
-		 ,{
-		 		type: 'triangle'
-		 	 ,size: 'x-large'
-		 	 ,x: 200
-		 	 ,y: 500
-		 	 ,rotation: 60
-		 	 ,color: 'lightseagreen'
-		 	}
-		 ,{
-		 		type: 'triangle'
-		 	 ,size: 'x-large'
-		 	 ,x: 200
-		 	 ,y: 500
-		 	 ,rotation: 90
-		 	 ,color: 'lightseagreen'
-		 	}
-		 // ,{
-		 // 		type: 'triangle'
-		 // 	 ,size: 'small'
-		 // 	 ,x: 200
-		 // 	 ,y: 500
-		 // 	 ,color: 'lightseagreen'
-		 // 	}
-		 // ,{
-		 // 		type: 'triangle'
-		 // 	 ,size: 'medium'
-		 // 	 ,x: 200
-		 // 	 ,y: 500
-		 // 	 ,color: 'lightseagreen'
-		 // 	}
-		 // ,{
-		 // 		type: 'triangle'
-		 // 	 ,size: 'large'
-		 // 	 ,x: 200
-		 // 	 ,y: 500
-		 // 	 ,color: 'lightseagreen'
-		 // 	}
-		 // ,{
-		 // 		type: 'triangle'
-		 // 	 ,size: 'x-large'
-		 // 	 ,x: 200
-		 // 	 ,y: 500
-		 // 	 ,color: 'lightseagreen'
-		 // 	}
 		]
 
 	 ,dependentShapes: [
 		 	{
 				type: 'square'
 			 ,size: 'medium'
-			 ,x: 0
-			 ,y: 0
+			 ,x: 30
+			 ,y: 30
 			 ,color: 'yellow'
 			}
 	 ]
