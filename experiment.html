@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Brad Darkroom</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="jsPsych-4.1/jspsych.js"></script>
+        <script src="libs/d3.min.js"></script>
+        <script src="jsPsych-4.1/plugins/jspsych-text.js"></script>
+        <script src="jsPsych-4.1/plugins/jspsych-darkroom.js"></script>
+        <script src="stimuli.js"></script>
+        <link href="jsPsych-4.1/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+        <link href="jsPsych-4.1/css/darkroom.css" rel="stylesheet" type="text/css"></link>
+    </head>
+    <body>
+    </body>
+
+    <script>
+
+    var testMode = true;
+
+    var welcome_trial = {
+    	type: 'text'
+     ,text: 'Welcome to the experiment.  Press any key to begin.'
+    }
+
+    var instruction_trial = {
+    	type: 'text'
+     ,text: 'Here are some instructions.  Press any key to continue.'
+    }
+
+    var darkroom_block = {
+    	type: 'darkroom'
+     ,stimuli: stimuli
+    }
+
+    var timeline = testMode ? [darkroom_block] : [welcome_trial, instruction_trial, darkroom_block];
+
+    jsPsych.init({
+    	experiment_structure: timeline
+     ,on_finish: function() {
+     		console.log(jsPsych.data.getData());
+    		jsPsych.data.localSave('darkroom_data.json', 'json', {});
+    	}
+    })
+
+    </script>
+</html>
