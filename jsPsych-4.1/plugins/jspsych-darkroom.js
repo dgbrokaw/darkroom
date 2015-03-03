@@ -118,7 +118,7 @@ They will record their feelings about the relation between the specified object 
 						              ,d3.select('#color').property('value')
 						              ,d3.select('#random').property('checked')
 						              ,d3.select('#confidence').property('value'));
-					jsPsych.data.write({impressions: trial_data});
+					jsPsych.data.write($.extend({}, {trial: trial}, {impressions: trial_data}));
 					display_element.html('');
 					jsPsych.finishTrial();
 				})
@@ -346,8 +346,7 @@ They will record their feelings about the relation between the specified object 
 			setupNextButtonListener();
 
 			function submitImpression(shape, size, color, random, confidence) {
-				trial_data.push({trial: trial
-												,reveals: reveals
+				trial_data.push({reveals: reveals
 				                ,userData: {time: jsPsych.totalTime()
 					               					 ,userShape: shape
 					                         ,userSize: size

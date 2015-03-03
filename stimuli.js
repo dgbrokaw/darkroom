@@ -44,8 +44,6 @@ var stimuli = [
 			}
 	 ]
 
-	 ,target: 0
-
 	 ,answer: 0
 	}
 
