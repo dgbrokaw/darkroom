@@ -9,7 +9,7 @@ Currently the list of stimuli is one long, so clicking the 'Next area' button wi
 
 There are two black areas, where the shapes will appear.  Above the black areas are buttons.  Click on those to reveal shapes.
 Enter anything you want in the text boxes, and/or click the checkbox if you think it's random, and set a confidence value.  Click the submit button to record that "impression."
-You can submit any number of impressions you want.  There are currently no rules defining the allowed combinations/orders of revealing shapes and submitting expressions.
+You can submit any number of impressions you want.  There are currently no rules defining the allowed combinations/orders of revealing shapes and submitting impressions.
 Clicking the 'Next area' button will also record whatever is currently entered.
 
 ## Defining stimuli
