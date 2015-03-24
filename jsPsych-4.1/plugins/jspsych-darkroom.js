@@ -163,22 +163,19 @@ They will record their feelings about the relation between the specified object 
 			}
 
 			function appendSquareToDarkroom(darkroom, shape) {
-				var x, y, width, height, rotation, color;
+				var x, y, width, height, rotation, color, stroke;
 				switch (shape.size) {
-					case 'x-small':
-						width = 25;
-						break;
 					case 'small':
-						width = 50;
+						width = 25;
+						stroke = 4;
 						break;
 					case 'medium':
 						width = 75;
+						stroke = 12;
 						break;
 					case 'large':
-						width = 100;
-						break;
-					case 'x-large':
 						width = 125;
+						stroke = 22;
 						break;
 				}
 				height = width;
@@ -194,26 +191,20 @@ They will record their feelings about the relation between the specified object 
 					.attr('width', width)
 					.attr('height', height)
 					.attr('transform', rotation ? rotation : '')
-					.style({'stroke-width': 8, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
 			}
 
 			function appendRectangleToDarkroom(darkroom, shape) {
-				var x, y, width, height, rotation;
+				var x, y, width, height, rotation, stroke;
 				switch (shape.size) {
-					case 'x-small':
-						width = 25; height = 15;
-						break;
 					case 'small':
-						width = 50; height = 25;
+						width = 25; height = 15; stroke = 4;
 						break;
 					case 'medium':
-						width = 75; height = 45;
+						width = 75; height = 45; stroke = 12;
 						break;
 					case 'large':
-						width = 100; height = 50;
-						break;
-					case 'x-large':
-						width = 125; height = 65;
+						width = 125; height = 65; stroke = 22;
 						break;
 				}
 				x = shape.x;
@@ -228,26 +219,23 @@ They will record their feelings about the relation between the specified object 
 					.attr('width', width)
 					.attr('height', height)
 					.attr('transform', rotation ? rotation : '')
-					.style({'stroke-width': 8, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
 			}
 
 			function appendCircleToDarkroom(darkroom, shape) {
-				var cx, cy, r;
+				var cx, cy, r, stroke;
 				switch (shape.size) {
-					case 'x-small':
-						r = 25/2;
-						break;
 					case 'small':
-						r = 50/2;
+						r = 25/2;
+						stroke = 4;
 						break;
 					case 'medium':
 						r = 75/2;
+						stroke = 12;
 						break;
 					case 'large':
-						r = 100/2;
-						break;
-					case 'x-large':
 						r = 125/2;
+						stroke = 22;
 						break;
 				}
 				x = shape.x;
@@ -259,26 +247,20 @@ They will record their feelings about the relation between the specified object 
 					.attr('cx', x)
 					.attr('cy', y)
 					.attr('r', r)
-					.style({'stroke-width': 8, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
 			}
 
 			function appendEllipseToDarkroom(darkroom, shape) {
-				var cx, cy, rx, ry, rotation;
+				var cx, cy, rx, ry, rotation, stroke;
 				switch (shape.size) {
-					case 'x-small':
-						rx = 25; ry = 15;
-						break;
 					case 'small':
-						rx = 50; ry = 25;
+						rx = 25; ry = 15; stroke = 4;
 						break;
 					case 'medium':
-						rx = 75; ry = 45;
+						rx = 75; ry = 45; stroke = 12;
 						break;
 					case 'large':
-						rx = 100; ry = 50;
-						break;
-					case 'x-large':
-						rx = 125; ry = 65;
+						rx = 125; ry = 65; stroke = 22;
 						break;
 				}
 				cx = shape.x;
@@ -293,25 +275,19 @@ They will record their feelings about the relation between the specified object 
 					.attr('rx', rx)
 					.attr('ry', ry)
 					.attr('transform', rotation ? rotation : '')
-					.style({'stroke-width': 8, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
 			}
 
 			function appendTriangleToDarkroom(darkroom, shape) {
-				var x, y, scale, rotation, strokeWidth;
+				var x, y, scale, rotation, strokeWidth, stroke;
 				switch (shape.size) {
-					case 'x-small':
-						scale = 0.5; strokeWidth = 16;
-						break;
 					case 'small':
-						scale = 1; strokeWidth = 8;
+						scale = 0.5; strokeWidth = 16;
 						break;
 					case 'medium':
 						scale = 1.5; strokeWidth = 5.35;
 						break;
 					case 'large':
-						scale = 2.33; strokeWidth = 3.45;
-						break;
-					case 'x-large':
 						scale = 3; strokeWidth = 2.65;
 						break;
 				}
@@ -328,7 +304,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('id', 'shape'+reveals.length)
 					.attr('points', '25,0 50,40 0,40')
 					.attr('transform', transform)
-					.style({'stroke-width': strokeWidth, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': 8, 'stroke': color, 'fill': 'none'});
 			}
 
 			function getRotationString(rotationAngle, cx, cy) {

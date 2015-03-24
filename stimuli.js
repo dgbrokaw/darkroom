@@ -4,32 +4,65 @@ var stimuli = [
 		independentShapes: [
 			{
 		 		type: 'triangle'
-		 	 ,size: 'x-large'
-		 	 ,x: 200
-		 	 ,y: 500
+		 	 ,size: 'large'
+		 	 ,x: 50
+		 	 ,y: 100
 		 	 ,color: 'lightseagreen'
 		 	}
 		 ,{
-		 		type: 'ellipse'
-		 	 ,size: 'large'
-		 	 ,x: 200
-		 	 ,y: 450
-		 	 ,rotation: 60
-		 	 ,color: 'magenta'
+		 		type: 'triangle'
+		 	 ,size: 'medium'
+		 	 ,x: 50
+		 	 ,y: 200
+		 	 ,color: 'lightseagreen'
+		 	}
+		 ,{
+		 		type: 'triangle'
+		 	 ,size: 'small'
+		 	 ,x: 50
+		 	 ,y: 300
+		 	 ,color: 'lightseagreen'
 		 	}
 		 ,{
 				type: 'square'
+			 ,size: 'large'
+			 ,x: 100
+			 ,y: 100
+			 ,color: 'yellow'
+			}
+		 ,{
+				type: 'square'
 			 ,size: 'medium'
-			 ,x: 200
+			 ,x: 100
 			 ,y: 200
-			 ,rotation: 30
+			 ,color: 'yellow'
+			}
+		 ,{
+				type: 'square'
+			 ,size: 'small'
+			 ,x: 100
+			 ,y: 300
 			 ,color: 'yellow'
 			}
 		 ,{
 		 		type: 'circle'
 		 	 ,size: 'large'
-		 	 ,x: 50
-		 	 ,y: 50
+		 	 ,x: 150
+		 	 ,y: 100
+		 	 ,color: 'lawngreen'
+			}
+		 ,{
+		 		type: 'circle'
+		 	 ,size: 'medium'
+		 	 ,x: 150
+		 	 ,y: 200
+		 	 ,color: 'lawngreen'
+			}
+		 ,{
+		 		type: 'circle'
+		 	 ,size: 'small'
+		 	 ,x: 150
+		 	 ,y: 300
 		 	 ,color: 'lawngreen'
 			}
 		]
