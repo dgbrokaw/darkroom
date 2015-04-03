@@ -1,7 +1,15 @@
 var stimuli = [
 
 	{
-		independentShapes: [
+
+		options: {
+			listPatternImages: true
+		 ,showSliderNumericFeedback: true
+		 ,randomSelectionMechanism: 'slider' // 'pattern'
+		 ,showPatternList: true
+		}
+
+	 ,independentShapes: [
 			{
 		 		type: 'triangle'
 		 	 ,size: 'large'
@@ -75,9 +83,24 @@ var stimuli = [
 			 ,y: 30
 			 ,color: 'yellow'
 			}
-	 ]
+	  ]
 
-	 ,answer: 0
+	 ,patterns: [
+	 		{
+	 			description: 'triangles turn into squares'
+	 		 ,image: 'image.png'
+	 		}
+	 	 ,{
+	 	 		description: 'blarstratartartartsarstarstartsarstartartarsaa'
+	 	 	 ,image: 'arseinarstianrtsinsartnerastn'
+	 	 	}
+	 	 ,{
+	 	 		description: 'beast warrzz beetle borgs corgrsarstartartsa ars'
+	 	 	 ,image: 'plooop'
+	 	 	}
+	 	]
+
+	 ,correctPattern: 0
 	}
 
 ];

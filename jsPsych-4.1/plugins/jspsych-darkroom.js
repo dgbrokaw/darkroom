@@ -20,8 +20,10 @@ They will record their feelings about the relation between the specified object 
 				var trial = {};
 				var stimulus = params.stimuli[i];
 
+				trial.options = stimulus.options;
 				trial.independentShapes = stimulus.independentShapes;
 				trial.dependentShapes = stimulus.dependentShapes;
+				trial.patterns = stimulus.patterns;
 				trial.target = stimulus.target;
 				trial.answer = stimulus.answer;
 				trials.push(trial);
@@ -29,6 +31,14 @@ They will record their feelings about the relation between the specified object 
 
 			return trials;
 		};
+
+		// TODO:
+		// - combo box for pattern selection -- check
+		// - image area for pattern image -- check
+		// - show images of patterns below input form
+		//   - must alter css so everything shows up on screen, must scroll down to see image list
+		// - option to show slider numeric feedback -- check
+		// - remove current random selection mechanism, include two new options -- check
 
 		plugin.trial = function(display_element, trial) {
 
@@ -39,6 +49,68 @@ They will record their feelings about the relation between the specified object 
 
 			function initializeHTML() {
 				display_element.html(darkroom_html);
+				displayListOfPatternImages(trial.patterns);
+				disableRandomSlider(trial.options.randomSelectionMechanism);
+				addPatternOptions(trial.patterns);
+				displaySelectedPatternImage();
+			}
+
+			function displayListOfPatternImages(patterns) {
+				if (!trial.options.showPatternList) return;
+				var container = d3.select('#patternImageList');
+				patternPreviews = container.selectAll('div')
+					.data(patterns).enter()
+					.append('div')
+					.classed('patternPreview', true);
+
+				patternPreviews.append('div')
+					.style({'word-wrap': 'break-word'})
+					.text(function(d){return d.description});
+
+				patternPreviews.append('svg').append('image')
+					.attr('width', '100px')
+					.attr('height', '100px')
+					.attr('x', '0px')
+					.attr('y', '0px')
+					.attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg');
+					// .attr('xlink:href', function(d) {'patternImages/'+d.image+'.png');
+			}
+
+			function disableRandomSlider(randomSelectionMechanism) {
+				if (randomSelectionMechanism!=='slider') {
+					d3.select('#randomSelectionDiv').node().hidden = true;
+				}
+			}
+
+			function addPatternOptions(patterns) {
+				if (trial.options.randomSelectionMechanism==='pattern') {
+					patterns.push({description: 'random - no pattern'});
+				}
+
+				var select = d3.select('#patternSelection');
+
+				select.selectAll('option')
+					.data(patterns).enter()
+					.append('option')
+					.attr('value', function(d) {return d.image})
+					.text(function(d) {return d.description});
+			}
+
+			function displaySelectedPatternImage() {
+				// var comboBox = d3.select('#patternSelection');
+				// var selectedImageName = comboBox.node().value;
+				// displayPatternImage(selectedImageName+'.png');
+				displayPatternImage();
+			}
+
+			function displayPatternImage(imageName) {
+				d3.select('#patternImageContainer').append('image')
+					.attr('id', 'patternImage')
+					.attr('width', '100%')
+					.attr('height', '100%')
+					.attr('x', '0px')
+					.attr('y', '0px')
+					.attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg')
 			}
 
 			function setupShapeButtons() {
@@ -95,19 +167,42 @@ They will record their feelings about the relation between the specified object 
 
 				updateConfidence(0);
 
+				d3.select('#random-confidence').on('input', function() {
+					updateRandomConfidence(+this.value);
+				});
+
+				updateRandomConfidence(0);
+
+				// d3.select('#patternSelection').on('change', function() {
+				// 	displaySelectedPatternImage();
+				// })
+
 				d3.select('#submit').on('click', function() {
-					submitImpression(reveals
-												 	,d3.select('#shape').property('value')
-						              ,d3.select('#size').property('value')
-						              ,d3.select('#color').property('value')
-						              ,d3.select('#random').property('checked')
-						              ,d3.select('#confidence').property('value'));
+					// submitImpression(reveals
+					// 							 	,d3.select('#shape').property('value')
+					// 	              ,d3.select('#size').property('value')
+					// 	              ,d3.select('#color').property('value')
+					// 	              ,d3.select('#random').property('checked')
+					// 	              ,d3.select('#confidence').property('value'));
 				});
 			}
 
 			function updateConfidence(confidenceValue) {
-				d3.select('#confidence-value').text(confidenceValue);
-				d3.select('#confidence').property('value', confidenceValue);
+				if (trial.options.showSliderNumericFeedback) {
+					d3.select('#confidence-value').text(confidenceValue);
+					d3.select('#confidence').property('value', confidenceValue);
+				} else {
+					d3.select('#confidence-value').text('');
+				}
+			}
+
+			function updateRandomConfidence(confidenceValue) {
+				if (trial.options.showSliderNumericFeedback) {
+					d3.select('#random-confidence-value').text(confidenceValue);
+					d3.select('#random-confidence').property('value', confidenceValue);
+				} else {
+					d3.select('#random-confidence-value').text('');
+				}
 			}
 
 			function setupNextButtonListener() {
@@ -332,7 +427,43 @@ They will record their feelings about the relation between the specified object 
 			}
 		}
 
-		var darkroom_html =
+		// var darkroom_html =
+		// 	"<div class='darkroomArea' id='darkroomArea1'>" +
+	 //  		"<div class='buttonArea' id='buttonArea1'></div>" +
+	 //  		"<svg class='darkroom' id='darkroom1'></svg>" +
+	 //  	"</div>" +
+	 //  	"<div class='darkroomArea' id='darkroomArea2'>" +
+	 //  		"<div class='buttonArea' id='buttonArea2'></div>" +
+	 //  		"<svg class='darkroom' id='darkroom2'></svg>" +
+	 //  	"</div>" +
+	 //  	"<div class='clear'></div>" +
+	 //  	"<div class='responseArea'>" +
+	 //  		"<div class='responses'>" +
+  // 				"<p>" +
+	 //  				"<label for='shape' class='text-label'>Shape:</label>" +
+	 //  				"<input type='text' id='shape'>" +
+	 //  				"<label for='size' class='text-label'>Size:</label>" +
+	 //  				"<input type='text' id='size'>" +
+	 //  				"<label for='color' class='text-label'>Color:</label>" +
+	 //  				"<input type='text' id='color'>" +
+  // 				"</p>" +
+  // 				"<p>" +
+	 //  				"<label class='text-label' style='width: 80px; margin-left: 100px'>Random</label>" +
+	 //  				"<input type='checkbox' name='random' value='random' id='random' class='random'>" +
+	 //  				"<label for='confidence'" +
+	 //  							 "style='display: inline-block; width: 150px; text-align: right; margin-left: 150px; margin-right: 20px'>" +
+	 //  							 "Confidence = <span id='confidence-value' style='display: inline-block'>…</span>" +
+	 //  				"</label>" +
+	 //  				"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block'>" +
+  // 				"</p>" +
+  // 				"<button style='margin-top: 2%; margin-left: 2%; width: 95%;' id='submit'>Submit</button>" +
+	 //  		"</div>" +
+	 //  	"</div>" +
+	 //  	"<div>" +
+	 //  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: right;' id='next'>Next area</button>" +
+	 //  	"</div>";
+
+	 var darkroom_html =
 			"<div class='darkroomArea' id='darkroomArea1'>" +
 	  		"<div class='buttonArea' id='buttonArea1'></div>" +
 	  		"<svg class='darkroom' id='darkroom1'></svg>" +
@@ -344,25 +475,28 @@ They will record their feelings about the relation between the specified object 
 	  	"<div class='clear'></div>" +
 	  	"<div class='responseArea'>" +
 	  		"<div class='responses'>" +
-  				"<p>" +
-	  				"<label for='shape' class='text-label'>Shape:</label>" +
-	  				"<input type='text' id='shape'>" +
-	  				"<label for='size' class='text-label'>Size:</label>" +
-	  				"<input type='text' id='size'>" +
-	  				"<label for='color' class='text-label'>Color:</label>" +
-	  				"<input type='text' id='color'>" +
-  				"</p>" +
-  				"<p>" +
-	  				"<label class='text-label' style='width: 80px; margin-left: 100px'>Random</label>" +
-	  				"<input type='checkbox' name='random' value='random' id='random' class='random'>" +
-	  				"<label for='confidence'" +
-	  							 "style='display: inline-block; width: 150px; text-align: right; margin-left: 150px; margin-right: 20px'>" +
-	  							 "Confidence = <span id='confidence-value' style='display: inline-block'>…</span>" +
+		  		"<div id='patternImageDiv'>" +
+		  			"<svg id='patternImageContainer'></svg>" +
+		  		"</div>" +
+  				"<div id='patternSelectionDiv'>" +
+	  				"<select id='patternSelection'></select>" +
+  				"</div>" +
+  				"<div id='confidenceSelectionDiv'>" +
+	  				"<label for='confidence'>" +
+	  				  "Confidence = <span id='confidence-value' style='display: inline-block'>…</span>" +
 	  				"</label>" +
-	  				"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block'>" +
-  				"</p>" +
-  				"<button style='margin-top: 2%; margin-left: 2%; width: 95%;' id='submit'>Submit</button>" +
+  					"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block'>" +
+  				"</div>" +
+  				"<div id='randomSelectionDiv'>" +
+  					"<label for='random'>" +
+  						"Random confidence = <span id='random-confidence-value' style='display: inline-block'>...</span>" +
+  					"</label>" +
+  					"<input type='range' id='random-confidence' min='0' max='100' step='1' style='display: inline-block'>" +
+  				"</div>" +
+  				"<button style='margin-top: 2%; margin-left: 5%; width: 40%;' id='submit'>Submit</button>" +
 	  		"</div>" +
+	  	"</div>" +
+	  	"<div id='patternImageList'>" +
 	  	"</div>" +
 	  	"<div>" +
 	  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: right;' id='next'>Next area</button>" +
