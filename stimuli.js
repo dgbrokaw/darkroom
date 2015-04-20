@@ -5,8 +5,7 @@ var stimuli = [
 		options: {
 			listPatternImages: true
 		 ,showSliderNumericFeedback: true
-		 ,randomSelectionMechanism: 'slider' // 'pattern'
-		 ,showPatternList: true
+		 ,randomSelectionMechanism: 'pattern'
 		}
 
 	 ,independentShapes: [
@@ -88,9 +87,9 @@ var stimuli = [
 
 	 ,patterns: [
 	 		{
-	 			description: 'Circle-Triangle-Square'
-	 		 ,image: 'Circle-Triangle-Square.png'
-	 		}
+	 	 		description: 'Random'
+	 	 	 ,image: 'Random.png'
+	 	 	}
 	 	 ,{
 	 	 		description: 'Circle-Square-Triangle'
 	 	 	 ,image: 'Circle-Square-Triangle.png'
@@ -108,9 +107,9 @@ var stimuli = [
 	 	 	 ,image: 'Large-Medium-Small.png'
 	 	 	}
 	 	 ,{
-	 	 		description: 'Random'
-	 	 	 ,image: 'Random.png'
-	 	 	}
+	 			description: 'Circle-Triangle-Square'
+	 		 ,image: 'Circle-Triangle-Square.png'
+	 		}
 	 	 ,{
 	 	 		description: 'Small-Medium-Large'
 	 	 	 ,image: 'Small-Medium-Large.png'

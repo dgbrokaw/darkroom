@@ -49,14 +49,20 @@ They will record their feelings about the relation between the specified object 
 
 			function initializeHTML() {
 				display_element.html(darkroom_html);
+
+				if (trial.options.randomSelectionMechanism==='slider' && trial.patterns[0].description==='Random') {
+					trial.patterns.splice(0, 1);
+				}
 				displayListOfPatternImages(trial.patterns);
+
 				disableRandomSlider(trial.options.randomSelectionMechanism);
+
 				addPatternOptions(trial.patterns);
 				displaySelectedPatternImage();
 			}
 
 			function displayListOfPatternImages(patterns) {
-				if (!trial.options.showPatternList) return;
+				if (!trial.options.listPatternImages) return;
 				var container = d3.select('#patternImageList');
 				patternPreviews = container.selectAll('div')
 					.data(patterns).enter()
@@ -179,12 +185,10 @@ They will record their feelings about the relation between the specified object 
 				})
 
 				d3.select('#submit').on('click', function() {
-					// submitImpression(reveals
-					// 							 	,d3.select('#shape').property('value')
-					// 	              ,d3.select('#size').property('value')
-					// 	              ,d3.select('#color').property('value')
-					// 	              ,d3.select('#random').property('checked')
-					// 	              ,d3.select('#confidence').property('value'));
+					submitImpression(reveals
+												 	,d3.select('#patternSelection').property('value')
+												 	,d3.select('#confidence').property('value')
+												 	,d3.select('#random-confidence').property('value'));
 				});
 			}
 
@@ -209,11 +213,9 @@ They will record their feelings about the relation between the specified object 
 			function setupNextButtonListener() {
 				d3.select('#next').on('click', function() {
 					submitImpression(reveals
-												 	,d3.select('#shape').property('value')
-						              ,d3.select('#size').property('value')
-						              ,d3.select('#color').property('value')
-						              ,d3.select('#random').property('checked')
-						              ,d3.select('#confidence').property('value'));
+												 	,d3.select('#patternSelection').property('value')
+												 	,d3.select('#confidence').property('value')
+												 	,d3.select('#random-confidence').property('value'));
 					jsPsych.data.write($.extend({}, {trial: trial}, {impressions: trial_data}));
 					display_element.html('');
 					jsPsych.finishTrial();
@@ -417,52 +419,15 @@ They will record their feelings about the relation between the specified object 
 			revealTargetShape();
 			setupNextButtonListener();
 
-			function submitImpression(shape, size, color, random, confidence) {
+			function submitImpression(reveals, pattern, confidence, randomConfidence) {
+				console.log(reveals, pattern, confidence, randomConfidence);
 				trial_data.push({reveals: reveals
 				                ,userData: {time: jsPsych.totalTime()
-					               					 ,userShape: shape
-					                         ,userSize: size
-					                         ,userColor: color
-					                         ,userRandom: random
-					                         ,userConfidence: confidence}});
+					               					 ,userPattern: pattern
+					               					 ,userConfidence: confidence
+					               					 ,userRandomConfidence: randomConfidence}});
 			}
 		}
-
-		// var darkroom_html =
-		// 	"<div class='darkroomArea' id='darkroomArea1'>" +
-	 //  		"<div class='buttonArea' id='buttonArea1'></div>" +
-	 //  		"<svg class='darkroom' id='darkroom1'></svg>" +
-	 //  	"</div>" +
-	 //  	"<div class='darkroomArea' id='darkroomArea2'>" +
-	 //  		"<div class='buttonArea' id='buttonArea2'></div>" +
-	 //  		"<svg class='darkroom' id='darkroom2'></svg>" +
-	 //  	"</div>" +
-	 //  	"<div class='clear'></div>" +
-	 //  	"<div class='responseArea'>" +
-	 //  		"<div class='responses'>" +
-  // 				"<p>" +
-	 //  				"<label for='shape' class='text-label'>Shape:</label>" +
-	 //  				"<input type='text' id='shape'>" +
-	 //  				"<label for='size' class='text-label'>Size:</label>" +
-	 //  				"<input type='text' id='size'>" +
-	 //  				"<label for='color' class='text-label'>Color:</label>" +
-	 //  				"<input type='text' id='color'>" +
-  // 				"</p>" +
-  // 				"<p>" +
-	 //  				"<label class='text-label' style='width: 80px; margin-left: 100px'>Random</label>" +
-	 //  				"<input type='checkbox' name='random' value='random' id='random' class='random'>" +
-	 //  				"<label for='confidence'" +
-	 //  							 "style='display: inline-block; width: 150px; text-align: right; margin-left: 150px; margin-right: 20px'>" +
-	 //  							 "Confidence = <span id='confidence-value' style='display: inline-block'>…</span>" +
-	 //  				"</label>" +
-	 //  				"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block'>" +
-  // 				"</p>" +
-  // 				"<button style='margin-top: 2%; margin-left: 2%; width: 95%;' id='submit'>Submit</button>" +
-	 //  		"</div>" +
-	 //  	"</div>" +
-	 //  	"<div>" +
-	 //  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: right;' id='next'>Next area</button>" +
-	 //  	"</div>";
 
 	 var darkroom_html =
 			"<div class='darkroomArea' id='darkroomArea1'>" +

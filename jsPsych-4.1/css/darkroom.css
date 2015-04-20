@@ -111,30 +111,3 @@ select {
 	display: inline-block;
 	float: left;
 }
-
-/*label.text-label {
-	display: inline-block;
-	width: 60px;
-	text-align: right;
-	margin-left: 10px;
-}
-
-input[type=checkbox].random {
-	border: 2px solid #58585A;
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	margin-left: 20px;
-	line-height: 15px;
-	vertical-align: middle;
-	cursor: pointer;
-}
-*/
-/*input[type=text], textarea {
-	width: 20%;
-	height: 25%;
-	margin-top: 1%;
-	margin-left: 2%;
-	font-size: 100%;
-	text-align: center;
-}*/
