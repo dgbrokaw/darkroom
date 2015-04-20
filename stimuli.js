@@ -5,14 +5,14 @@ var stimuli = [
 		options: {
 			listPatternImages: true
 		 ,showSliderNumericFeedback: true
-		 ,randomSelectionMechanism: 'slider' // 'pattern'
-		 ,showPatternList: true
+		 ,randomSelectionMechanism: 'pattern'
 		}
 
 	 ,independentShapes: [
 			{
 		 		type: 'triangle'
 		 	 ,size: 'large'
+		 	 ,fill: 'yellow'
 		 	 ,x: 50
 		 	 ,y: 100
 		 	 ,color: 'lightseagreen'
@@ -87,16 +87,40 @@ var stimuli = [
 
 	 ,patterns: [
 	 		{
-	 			description: 'triangles turn into squares'
-	 		 ,image: 'image.png'
-	 		}
-	 	 ,{
-	 	 		description: 'blarstratartartartsarstarstartsarstartartarsaa'
-	 	 	 ,image: 'arseinarstianrtsinsartnerastn'
+	 	 		description: 'Random'
+	 	 	 ,image: 'Random.png'
 	 	 	}
 	 	 ,{
-	 	 		description: 'beast warrzz beetle borgs corgrsarstartartsa ars'
-	 	 	 ,image: 'plooop'
+	 	 		description: 'Circle-Square-Triangle'
+	 	 	 ,image: 'Circle-Square-Triangle.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Large-Medium-Small'
+	 	 	 ,image: 'Large-Medium-Small.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Small-Medium-Large'
+	 	 	 ,image: 'Small-Medium-Large.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Not-Filled--Filled'
+	 	 	 ,image: 'Large-Medium-Small.png'
+	 	 	}
+	 	 ,{
+	 			description: 'Circle-Triangle-Square'
+	 		 ,image: 'Circle-Triangle-Square.png'
+	 		}
+	 	 ,{
+	 	 		description: 'Small-Medium-Large'
+	 	 	 ,image: 'Small-Medium-Large.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Small-Medium-Large'
+	 	 	 ,image: 'Small-Medium-Large.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Small-Medium-Large'
+	 	 	 ,image: 'Small-Medium-Large.png'
 	 	 	}
 	 	]
 

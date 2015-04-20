@@ -49,31 +49,37 @@ They will record their feelings about the relation between the specified object 
 
 			function initializeHTML() {
 				display_element.html(darkroom_html);
+
+				if (trial.options.randomSelectionMechanism==='slider' && trial.patterns[0].description==='Random') {
+					trial.patterns.splice(0, 1);
+				}
 				displayListOfPatternImages(trial.patterns);
+
 				disableRandomSlider(trial.options.randomSelectionMechanism);
+
 				addPatternOptions(trial.patterns);
 				displaySelectedPatternImage();
 			}
 
 			function displayListOfPatternImages(patterns) {
-				if (!trial.options.showPatternList) return;
+				if (!trial.options.listPatternImages) return;
 				var container = d3.select('#patternImageList');
 				patternPreviews = container.selectAll('div')
 					.data(patterns).enter()
 					.append('div')
 					.classed('patternPreview', true);
 
-				patternPreviews.append('div')
-					.style({'word-wrap': 'break-word'})
-					.text(function(d){return d.description});
+				// patternPreviews.append('div')
+				// 	.style({'word-wrap': 'break-word'})
+				// 	.text(function(d){return d.description});
 
 				patternPreviews.append('svg').append('image')
-					.attr('width', '100px')
-					.attr('height', '100px')
+					.attr('width', '150px')
+					.attr('height', '150px')
 					.attr('x', '0px')
 					.attr('y', '0px')
-					.attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg');
-					// .attr('xlink:href', function(d) {'patternImages/'+d.image+'.png');
+					// .attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg');
+					.attr('xlink:href', function(d) {return 'patternImages/'+d.image});
 			}
 
 			function disableRandomSlider(randomSelectionMechanism) {
@@ -97,10 +103,10 @@ They will record their feelings about the relation between the specified object 
 			}
 
 			function displaySelectedPatternImage() {
-				// var comboBox = d3.select('#patternSelection');
-				// var selectedImageName = comboBox.node().value;
-				// displayPatternImage(selectedImageName+'.png');
-				displayPatternImage();
+				var comboBox = d3.select('#patternSelection');
+				var selectedImageName = comboBox.node().value;
+				displayPatternImage('patternImages/'+selectedImageName);
+				// displayPatternImage();
 			}
 
 			function displayPatternImage(imageName) {
@@ -110,7 +116,8 @@ They will record their feelings about the relation between the specified object 
 					.attr('height', '100%')
 					.attr('x', '0px')
 					.attr('y', '0px')
-					.attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg')
+					.attr('xlink:href', imageName);
+					// .attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg')
 			}
 
 			function setupShapeButtons() {
@@ -173,17 +180,15 @@ They will record their feelings about the relation between the specified object 
 
 				updateRandomConfidence(0);
 
-				// d3.select('#patternSelection').on('change', function() {
-				// 	displaySelectedPatternImage();
-				// })
+				d3.select('#patternSelection').on('change', function() {
+					displaySelectedPatternImage();
+				})
 
 				d3.select('#submit').on('click', function() {
-					// submitImpression(reveals
-					// 							 	,d3.select('#shape').property('value')
-					// 	              ,d3.select('#size').property('value')
-					// 	              ,d3.select('#color').property('value')
-					// 	              ,d3.select('#random').property('checked')
-					// 	              ,d3.select('#confidence').property('value'));
+					submitImpression(reveals
+												 	,d3.select('#patternSelection').property('value')
+												 	,d3.select('#confidence').property('value')
+												 	,d3.select('#random-confidence').property('value'));
 				});
 			}
 
@@ -208,11 +213,9 @@ They will record their feelings about the relation between the specified object 
 			function setupNextButtonListener() {
 				d3.select('#next').on('click', function() {
 					submitImpression(reveals
-												 	,d3.select('#shape').property('value')
-						              ,d3.select('#size').property('value')
-						              ,d3.select('#color').property('value')
-						              ,d3.select('#random').property('checked')
-						              ,d3.select('#confidence').property('value'));
+												 	,d3.select('#patternSelection').property('value')
+												 	,d3.select('#confidence').property('value')
+												 	,d3.select('#random-confidence').property('value'));
 					jsPsych.data.write($.extend({}, {trial: trial}, {impressions: trial_data}));
 					display_element.html('');
 					jsPsych.finishTrial();
@@ -286,7 +289,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('width', width)
 					.attr('height', height)
 					.attr('transform', rotation ? rotation : '')
-					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function appendRectangleToDarkroom(darkroom, shape) {
@@ -314,7 +317,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('width', width)
 					.attr('height', height)
 					.attr('transform', rotation ? rotation : '')
-					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function appendCircleToDarkroom(darkroom, shape) {
@@ -342,7 +345,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('cx', x)
 					.attr('cy', y)
 					.attr('r', r)
-					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function appendEllipseToDarkroom(darkroom, shape) {
@@ -370,7 +373,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('rx', rx)
 					.attr('ry', ry)
 					.attr('transform', rotation ? rotation : '')
-					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function appendTriangleToDarkroom(darkroom, shape) {
@@ -399,7 +402,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('id', 'shape'+reveals.length)
 					.attr('points', '25,0 50,40 0,40')
 					.attr('transform', transform)
-					.style({'stroke-width': 8, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': 8, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function getRotationString(rotationAngle, cx, cy) {
@@ -416,52 +419,15 @@ They will record their feelings about the relation between the specified object 
 			revealTargetShape();
 			setupNextButtonListener();
 
-			function submitImpression(shape, size, color, random, confidence) {
+			function submitImpression(reveals, pattern, confidence, randomConfidence) {
+				console.log(reveals, pattern, confidence, randomConfidence);
 				trial_data.push({reveals: reveals
 				                ,userData: {time: jsPsych.totalTime()
-					               					 ,userShape: shape
-					                         ,userSize: size
-					                         ,userColor: color
-					                         ,userRandom: random
-					                         ,userConfidence: confidence}});
+					               					 ,userPattern: pattern
+					               					 ,userConfidence: confidence
+					               					 ,userRandomConfidence: randomConfidence}});
 			}
 		}
-
-		// var darkroom_html =
-		// 	"<div class='darkroomArea' id='darkroomArea1'>" +
-	 //  		"<div class='buttonArea' id='buttonArea1'></div>" +
-	 //  		"<svg class='darkroom' id='darkroom1'></svg>" +
-	 //  	"</div>" +
-	 //  	"<div class='darkroomArea' id='darkroomArea2'>" +
-	 //  		"<div class='buttonArea' id='buttonArea2'></div>" +
-	 //  		"<svg class='darkroom' id='darkroom2'></svg>" +
-	 //  	"</div>" +
-	 //  	"<div class='clear'></div>" +
-	 //  	"<div class='responseArea'>" +
-	 //  		"<div class='responses'>" +
-  // 				"<p>" +
-	 //  				"<label for='shape' class='text-label'>Shape:</label>" +
-	 //  				"<input type='text' id='shape'>" +
-	 //  				"<label for='size' class='text-label'>Size:</label>" +
-	 //  				"<input type='text' id='size'>" +
-	 //  				"<label for='color' class='text-label'>Color:</label>" +
-	 //  				"<input type='text' id='color'>" +
-  // 				"</p>" +
-  // 				"<p>" +
-	 //  				"<label class='text-label' style='width: 80px; margin-left: 100px'>Random</label>" +
-	 //  				"<input type='checkbox' name='random' value='random' id='random' class='random'>" +
-	 //  				"<label for='confidence'" +
-	 //  							 "style='display: inline-block; width: 150px; text-align: right; margin-left: 150px; margin-right: 20px'>" +
-	 //  							 "Confidence = <span id='confidence-value' style='display: inline-block'>…</span>" +
-	 //  				"</label>" +
-	 //  				"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block'>" +
-  // 				"</p>" +
-  // 				"<button style='margin-top: 2%; margin-left: 2%; width: 95%;' id='submit'>Submit</button>" +
-	 //  		"</div>" +
-	 //  	"</div>" +
-	 //  	"<div>" +
-	 //  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: right;' id='next'>Next area</button>" +
-	 //  	"</div>";
 
 	 var darkroom_html =
 			"<div class='darkroomArea' id='darkroomArea1'>" +
