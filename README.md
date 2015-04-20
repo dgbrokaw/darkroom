@@ -7,8 +7,11 @@ The experiment can be run by opening the experiment.html file in a browser (I us
 The experiment is currently in 'test mode,' so only the block with the new stuff will be shown.  I haven't written a complete instructions page yet, so that's all there is to see.
 Currently the list of stimuli is one long, so clicking the 'Next area' button will end the program.
 
-There are two black areas, where the shapes will appear.  Above the black areas are buttons.  Click on those to reveal shapes.
-Enter anything you want in the text boxes, and/or click the checkbox if you think it's random, and set a confidence value.  Click the submit button to record that "impression."
+There are two black areas where the shapes will appear.  Above the black areas are buttons.  Click on those to reveal shapes.
+
+There is a drop-down selection menu to choose which pattern the user thinks is occuring in a set of shapes.  The user chooses a pattern and enters their confidence with a slider.
+
+Click the submit button to record that "impression."
 You can submit any number of impressions you want.  There are currently no rules defining the allowed combinations/orders of revealing shapes and submitting impressions.
 Clicking the 'Next area' button will also record whatever is currently entered.
 
@@ -17,12 +20,14 @@ The shapes that will be revealed are detailed in the stimuli.js file.
 
 There are five shapes available: 'square,' 'rectangle,' 'circle,' 'ellipse,' and 'triangle.'
 
-There are five sizes: 'x-small,' 'small,' 'medium,' 'large,' and 'x-large.'
+There are three sizes: small,' 'medium,' and 'large.'
 
 You can enter any color with a color code or name.
 http://www.w3schools.com/html/html_colornames.asp
 
 You can optionally set a rotation.  In the example stimuli the square is rotated by 30 degrees.
+
+You can set a fill color for the shape.  This is the color that will fill the inside of the shape.  If this is not set the fill of the shape will be black, and only the outline will be colored.
 
 The shapes defined in the 'independentShapes' list are the shapes that will appear in the left area.  The shapes defined in the 'dependentShapes' list will appear in the right area.  (If the x and y values are set too high or at a negative value they will not appear).
 
