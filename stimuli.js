@@ -13,6 +13,7 @@ var stimuli = [
 			{
 		 		type: 'triangle'
 		 	 ,size: 'large'
+		 	 ,fill: 'yellow'
 		 	 ,x: 50
 		 	 ,y: 100
 		 	 ,color: 'lightseagreen'
@@ -87,16 +88,40 @@ var stimuli = [
 
 	 ,patterns: [
 	 		{
-	 			description: 'triangles turn into squares'
-	 		 ,image: 'image.png'
+	 			description: 'Circle-Triangle-Square'
+	 		 ,image: 'Circle-Triangle-Square.png'
 	 		}
 	 	 ,{
-	 	 		description: 'blarstratartartartsarstarstartsarstartartarsaa'
-	 	 	 ,image: 'arseinarstianrtsinsartnerastn'
+	 	 		description: 'Circle-Square-Triangle'
+	 	 	 ,image: 'Circle-Square-Triangle.png'
 	 	 	}
 	 	 ,{
-	 	 		description: 'beast warrzz beetle borgs corgrsarstartartsa ars'
-	 	 	 ,image: 'plooop'
+	 	 		description: 'Large-Medium-Small'
+	 	 	 ,image: 'Large-Medium-Small.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Small-Medium-Large'
+	 	 	 ,image: 'Small-Medium-Large.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Not-Filled--Filled'
+	 	 	 ,image: 'Large-Medium-Small.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Random'
+	 	 	 ,image: 'Random.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Small-Medium-Large'
+	 	 	 ,image: 'Small-Medium-Large.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Small-Medium-Large'
+	 	 	 ,image: 'Small-Medium-Large.png'
+	 	 	}
+	 	 ,{
+	 	 		description: 'Small-Medium-Large'
+	 	 	 ,image: 'Small-Medium-Large.png'
 	 	 	}
 	 	]
 

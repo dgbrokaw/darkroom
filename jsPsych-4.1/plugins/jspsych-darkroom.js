@@ -63,17 +63,17 @@ They will record their feelings about the relation between the specified object 
 					.append('div')
 					.classed('patternPreview', true);
 
-				patternPreviews.append('div')
-					.style({'word-wrap': 'break-word'})
-					.text(function(d){return d.description});
+				// patternPreviews.append('div')
+				// 	.style({'word-wrap': 'break-word'})
+				// 	.text(function(d){return d.description});
 
 				patternPreviews.append('svg').append('image')
-					.attr('width', '100px')
-					.attr('height', '100px')
+					.attr('width', '150px')
+					.attr('height', '150px')
 					.attr('x', '0px')
 					.attr('y', '0px')
-					.attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg');
-					// .attr('xlink:href', function(d) {'patternImages/'+d.image+'.png');
+					// .attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg');
+					.attr('xlink:href', function(d) {return 'patternImages/'+d.image});
 			}
 
 			function disableRandomSlider(randomSelectionMechanism) {
@@ -97,10 +97,10 @@ They will record their feelings about the relation between the specified object 
 			}
 
 			function displaySelectedPatternImage() {
-				// var comboBox = d3.select('#patternSelection');
-				// var selectedImageName = comboBox.node().value;
-				// displayPatternImage(selectedImageName+'.png');
-				displayPatternImage();
+				var comboBox = d3.select('#patternSelection');
+				var selectedImageName = comboBox.node().value;
+				displayPatternImage('patternImages/'+selectedImageName);
+				// displayPatternImage();
 			}
 
 			function displayPatternImage(imageName) {
@@ -110,7 +110,8 @@ They will record their feelings about the relation between the specified object 
 					.attr('height', '100%')
 					.attr('x', '0px')
 					.attr('y', '0px')
-					.attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg')
+					.attr('xlink:href', imageName);
+					// .attr('xlink:href', 'patternImages/colossal_squid_vs_sperm_whale_by_nocturnalsea-d36nl85.jpg')
 			}
 
 			function setupShapeButtons() {
@@ -173,9 +174,9 @@ They will record their feelings about the relation between the specified object 
 
 				updateRandomConfidence(0);
 
-				// d3.select('#patternSelection').on('change', function() {
-				// 	displaySelectedPatternImage();
-				// })
+				d3.select('#patternSelection').on('change', function() {
+					displaySelectedPatternImage();
+				})
 
 				d3.select('#submit').on('click', function() {
 					// submitImpression(reveals
@@ -286,7 +287,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('width', width)
 					.attr('height', height)
 					.attr('transform', rotation ? rotation : '')
-					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function appendRectangleToDarkroom(darkroom, shape) {
@@ -314,7 +315,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('width', width)
 					.attr('height', height)
 					.attr('transform', rotation ? rotation : '')
-					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function appendCircleToDarkroom(darkroom, shape) {
@@ -342,7 +343,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('cx', x)
 					.attr('cy', y)
 					.attr('r', r)
-					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function appendEllipseToDarkroom(darkroom, shape) {
@@ -370,7 +371,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('rx', rx)
 					.attr('ry', ry)
 					.attr('transform', rotation ? rotation : '')
-					.style({'stroke-width': stroke, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function appendTriangleToDarkroom(darkroom, shape) {
@@ -399,7 +400,7 @@ They will record their feelings about the relation between the specified object 
 					.attr('id', 'shape'+reveals.length)
 					.attr('points', '25,0 50,40 0,40')
 					.attr('transform', transform)
-					.style({'stroke-width': 8, 'stroke': color, 'fill': 'none'});
+					.style({'stroke-width': 8, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
 			}
 
 			function getRotationString(rotationAngle, cx, cy) {
