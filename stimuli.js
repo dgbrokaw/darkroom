@@ -5,7 +5,7 @@ var stimuli = [
 		options: {
 			listPatternImages: true
 		 ,showSliderNumericFeedback: true
-		 ,randomSelectionMechanism: 'pattern'
+		 ,sliderForRandom: true
 		}
 
 	 ,independentShapes: [

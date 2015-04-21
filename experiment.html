@@ -7,7 +7,7 @@
         <script src="libs/d3.min.js"></script>
         <script src="jsPsych-4.1/plugins/jspsych-text.js"></script>
         <script src="jsPsych-4.1/plugins/jspsych-darkroom.js"></script>
-        <script src="stimuli.js"></script>
+        <script src="stimuliData.js"></script>
         <link href="jsPsych-4.1/css/jspsych.css" rel="stylesheet" type="text/css"></link>
         <link href="jsPsych-4.1/css/darkroom.css" rel="stylesheet" type="text/css"></link>
     </head>
@@ -16,7 +16,53 @@
 
     <script>
 
+    subject_id = uid().substr(1,6).toUpperCase();
+
     var testMode = true;
+    var options = {
+        listPatternImages: true
+      , showSliderNumericFeedback: true
+      , sliderForRandom: true
+    };
+
+    var patterns = [
+        {
+           description: 'Random'
+        ,  image: 'Random.png'
+        }
+     ,{
+            description: 'Circle-Square-Triangle'
+         ,image: 'Circle-Square-Triangle.png'
+        }
+     ,{
+            description: 'Large-Medium-Small'
+         ,image: 'Large-Medium-Small.png'
+        }
+     ,{
+            description: 'Small-Medium-Large'
+         ,image: 'Small-Medium-Large.png'
+        }
+     ,{
+            description: 'Not-Filled--Filled'
+         ,image: 'Large-Medium-Small.png'
+        }
+     ,{
+            description: 'Circle-Triangle-Square'
+         ,image: 'Circle-Triangle-Square.png'
+        }
+     ,{
+            description: 'Small-Medium-Large'
+         ,image: 'Small-Medium-Large.png'
+        }
+     ,{
+            description: 'Small-Medium-Large'
+         ,image: 'Small-Medium-Large.png'
+        }
+     ,{
+            description: 'Small-Medium-Large'
+         ,image: 'Small-Medium-Large.png'
+        }
+    ]
 
     var welcome_trial = {
     	type: 'text'
@@ -30,18 +76,149 @@
 
     var darkroom_block = {
     	type: 'darkroom'
-     ,stimuli: stimuli
+     ,stimuli: []
     }
 
-    var timeline = testMode ? [darkroom_block] : [welcome_trial, instruction_trial, darkroom_block];
+    function startExperiment(mainTrials) {
+        darkroom_block.stimuli = shuffle(mainTrials);
+        var timeline = testMode ? [darkroom_block] : [welcome_trial, instruction_trial, darkroom_block];
 
-    jsPsych.init({
-    	experiment_structure: timeline
-     ,on_finish: function() {
-     		console.log(jsPsych.data.getData());
-    		jsPsych.data.localSave('darkroom_data.json', 'json', {});
-    	}
-    })
+        jsPsych.init({
+            experiment_structure: timeline
 
+            ,on_finish: function() {
+                console.log(jsPsych.data.getData());
+                jsPsych.data.localSave('darkroom_data.json', 'json', {});
+            }
+        });
+    }
+
+    function parseStimuliCSV(callback) {
+        // d3.csv.parse(stimuliCSV)
+        //     .row(function(d) {
+        //         return {
+        //             stimulusNum: d.stimulusNum
+        //           , patternName: d.patternName
+        //           , pairNumber: d.pairNumber
+        //           , leftRevealOrder: d.leftRevealOrder
+        //           , leftShape: d.leftShape
+        //           , leftSize: d.leftSize
+        //           , leftFill: d.leftFill
+        //           , rightRevealOrder: d.rightRevealOrder
+        //           , rightShape: d.rightShape
+        //           , rightSize: d.rightSize
+        //           , rightFill: d.rightFill
+        //           , xPos: d.xPos
+        //           , yPos: d.yPos
+        //         }
+        //     })
+        // .get(callback);
+        var rows = d3.csv.parse(stimuliCSV, function(d) {
+            return {
+                stimulusNum: d.stimulusNum
+              , patternName: d.patternName
+              , pairNumber: d.pairNumber
+              , leftRevealOrder: d.leftRevealOrder
+              , leftShape: d.leftShape
+              , leftSize: d.leftSize
+              , leftFill: d.leftFill
+              , rightRevealOrder: d.rightRevealOrder
+              , rightShape: d.rightShape
+              , rightSize: d.rightSize
+              , rightFill: d.rightFill
+              , xPos: d.xPos
+              , yPos: d.yPos
+            }
+        });
+        callback(rows);
+    }
+
+    function collectRowsIntoTrials(rows, callback) {
+        var trials = [];
+        var currTrialNum = 0;
+
+        var trial;
+        for (var i=0; i<rows.length; i++) {
+            var r = rows[i];
+            if (r.stimulusNum!==currTrialNum) {
+                if (r.stimulusNum>1) {
+                    trials.push(trial);
+                }
+                currTrialNum = r.stimulusNum;
+                trial = {
+                  options: extend({}, options)
+                , independentShapes: []
+                , dependentShapes: []
+                , patterns: patterns
+                , correctPattern: r.patternName
+                };
+            }
+            var independentShape = {}
+               ,dependentShape = {};
+
+            independentShape.type = r.leftShape.toLowerCase();
+            independentShape.size = r.leftSize.toLowerCase();
+            independentShape.fill = r.leftFill==='Solid Fill' ? true : false;
+            independentShape.x = r.xPos;
+            independentShape.y = r.yPos;
+            independentShape.buttonNum = parseInt(r.leftRevealOrder);
+
+            dependentShape.type = r.rightShape.toLowerCase();
+            dependentShape.size = r.rightSize.toLowerCase();
+            dependentShape.fill = r.rightFill==='Solid Fill' ? true : false;
+            dependentShape.x = r.xPos;
+            dependentShape.y = r.yPos;
+            dependentShape.buttonNum = parseInt(r.rightRevealOrder);
+
+            trial.independentShapes.push(independentShape);
+            trial.dependentShapes.push(dependentShape);
+        }
+
+        trials.push(trial);
+
+        callback(trials);
+    }
+
+    function uid() {
+        var b32 = 0x100000000, f = 0xf, b = []
+        str = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'];
+
+        var i = 0;
+        var r = Math.random()*b32;
+        b[i++] = str[r & f];
+        b[i++] = str[r>>>4 & f];
+        b[i++] = str[r>>>8 & f];
+        b[i++] = str[r>>>12 & f];
+        b[i++] = str[r>>>16 & f];
+        b[i++] = str[r>>>20 & f];
+        b[i++] = str[r>>>24 & f];
+        b[i++] = str[r>>>28 & f];
+        r = Math.random()*b32;
+        b[i++] = str[r & f];
+        b[i++] = str[r>>>4 & f];
+        b[i++] = str[r>>>8 & f];
+        b[i++] = str[r>>>12 & f];
+        b[i++] = str[r>>>16 & f];
+        b[i++] = str[r>>>20 & f];
+        b[i++] = str[r>>>24 & f];
+        b[i++] = str[r>>>28 & f];
+        return "_" + b.join("");
+    }
+
+    function extend(a, b) {
+      if (typeof(b) === 'object') for (var key in b) a[key] = b[key];
+      return a;
+    }
+
+    function shuffle(o) {
+        o = o.slice();
+        for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    }
+
+    // This is where the experiment starts.
+    parseStimuliCSV(function(rows) {
+        collectRowsIntoTrials(rows, startExperiment);
+    });
     </script>
 </html>
