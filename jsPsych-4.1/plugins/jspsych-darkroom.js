@@ -5,8 +5,6 @@ They will record their feelings about the relation between the specified object 
 
 */
 
-// note: set colors of shapes before using them.
-
 (function($) {
 	jsPsych['darkroom'] = (function() {
 
@@ -33,14 +31,6 @@ They will record their feelings about the relation between the specified object 
 
 			return trials;
 		};
-
-		// TODO:
-		// - combo box for pattern selection -- check
-		// - image area for pattern image -- check
-		// - show images of patterns below input form
-		//   - must alter css so everything shows up on screen, must scroll down to see image list
-		// - option to show slider numeric feedback -- check
-		// - remove current random selection mechanism, include two new options -- check
 
 		plugin.trial = function(display_element, trial) {
 
@@ -71,22 +61,6 @@ They will record their feelings about the relation between the specified object 
 
 				addPatternOptions(trial.patterns);
 				displaySelectedPatternImage();
-			}
-
-			function displayListOfPatternImages(patterns) {
-				if (!trial.options.listPatternImages) return;
-				var container = d3.select('#patternImageList');
-				patternPreviews = container.selectAll('div')
-					.data(patterns).enter()
-					.append('div')
-					.classed('patternPreview', true);
-
-				patternPreviews.append('svg').append('image')
-					.attr('width', '150px')
-					.attr('height', '150px')
-					.attr('x', '0px')
-					.attr('y', '0px')
-					.attr('xlink:href', function(d) {return 'patternImages/'+d.image});
 			}
 
 			function disableRandomSlider(sliderForRandom) {
@@ -122,51 +96,31 @@ They will record their feelings about the relation between the specified object 
 			}
 
 			function setupShapeButtons() {
-				for (var i=1; i<11; i++) {
+				var x = 4;
+				for (var i=1; i<10; i++) {
 					var b = d3.select('#buttonArea1').append('button')
 						.attr('id', 'button1-'+i)
 						.classed('shapeButton', true)
-						.style({'margin-left': (Math.random()*10+5)+'px', 'margin-top': (Math.random()*40)+'px'});
+						.style({'left': x+Math.random()*3+'%'});
 					b.on('click', function() {
 						disableButton(this);
 						revealShape(this.id);
 					});
+					x += 4;
 				}
-				for (var i=1; i<11; i++) {
+				x = 4;
+				for (var i=1; i<10; i++) {
 					var b = d3.select('#buttonArea2').append('button')
 						.attr('id', 'button2-'+i)
 						.classed('shapeButton', true)
-						.style({'margin-left': (Math.random()*10+5)+'px', 'margin-top': (Math.random()*40)+'px'});
+						.style({'left': x+Math.random()*5+'%'})
 					b.on('click', function() {
 						disableButton(this);
 						revealShape(this.id);
 					});
+					x += 4;
 				}
 			}
-
-			// function revealTargetShape() {
-			// 	disableButton('#button1-1');
-			// 	revealShape('#button1-1');
-			// 	appendTargetArrow();
-			// }
-
-			// function appendTargetArrow() {
-			// 	var darkroom = d3.select('#darkroom1');
-			// 	var shapeBB = d3.select('#shape1')[0][0].getBoundingClientRect()
-			// 	   ,darkroomBB = darkroom[0][0].getBoundingClientRect();
-			// 	var is_circle = reveals[0].type==='circle';
-			// 	var is_triangle = reveals[0].type==='triangle';
-			// 	var arrow = darkroom.append('path')
-			// 		.attr('stroke', 'red')
-			// 		.attr('stroke-width', 4)
-			// 		.attr('fill', 'none')
-			// 		.attr('d', 'M 2 12' +
-			// 							 'L 42 12' +
-			// 							 'M 32 2' +
-			// 							 'L 42 12' +
-			// 							 'L 32 22')
-			// 		.attr('transform', 'translate('+(shapeBB.left-darkroomBB.left-10 - (is_circle ? 25 : 0) + (is_triangle ? 25 : 0))+','+(shapeBB.top-darkroomBB.top)+') rotate(20)');
-			// }
 
 			function setupFormListener() {
 				d3.select('#confidence').on('input', function() {
@@ -211,6 +165,48 @@ They will record their feelings about the relation between the specified object 
 				}
 			}
 
+			function setupPatternListButtonListener() {
+				if (trial.options.listPatternImages) {
+					d3.select('#patternListButton').on('click', function() {
+						appendPatternListDiv();
+						displayListOfPatternImages(trial.patterns);
+					});
+				} else {
+					d3.select('#patternListButton').remove();
+				}
+			}
+
+			function appendPatternListDiv() {
+				var div = d3.select('body').insert('div', ':first-child')
+					.attr('id', 'patternListDiv');
+
+				var button = div.append('button')
+					.attr('id', 'closePatternListButton')
+					.text('X');
+
+				button.on('click', function() {
+					div.remove();
+				})
+			}
+
+			function displayListOfPatternImages(patterns) {
+				var container = d3.select('#patternListDiv');
+
+				patternPreviews = container.selectAll('div')
+					.data(patterns).enter()
+					.append('div')
+					.classed('patternPreview', true);
+
+				patternPreviews.append('svg')
+					.attr('width', '200px')
+					.attr('height', '200px').append('image')
+						.attr('width', '200px')
+						.attr('height', '200px')
+						.attr('x', '0px')
+						.attr('y', '0px')
+						.attr('xlink:href', function(d) {return 'patternImages/'+d.image});
+			}
+
 			function setupNextButtonListener() {
 				d3.select('#next').on('click', function() {
 					submitImpression(reveals
@@ -224,9 +220,7 @@ They will record their feelings about the relation between the specified object 
 			}
 
 			function disableButton(button) {
-				d3.select(button)
-					.classed('shapeButton', null)
-					.attr('disabled', 'disabled');
+				d3.select(button).property('hidden', true);
 			}
 
 			function revealShape(buttonID) {
@@ -235,6 +229,7 @@ They will record their feelings about the relation between the specified object 
 				   ,shape = dependency==='independent' ? getShapeByIDX(trial.independentShapes, idxOfShape) : getShapeByIDX(trial.dependentShapes, idxOfShape);
 				var darkroom = d3.select(dependency==='independent' ? '#darkroom1' : '#darkroom2');
 
+				console.log(shape);
 				if (shape) {
 					reveals.push(shape);
 					appendShapeToDarkroom(darkroom, shape);
@@ -252,6 +247,10 @@ They will record their feelings about the relation between the specified object 
 			}
 
 			function appendShapeToDarkroom(darkroom, shape) {
+				var width = darkroom.property('width').baseVal.value
+				   ,height = darkroom.property('height').baseVal.value;
+				shape.x = shape.x*width*0.90;
+				shape.y = shape.y*height*0.90;
 				switch (shape.type) {
 					case 'square':
 						appendSquareToDarkroom(darkroom, shape);
@@ -262,12 +261,6 @@ They will record their feelings about the relation between the specified object 
 					case 'triangle':
 						appendTriangleToDarkroom(darkroom, shape);
 						break;
-					// case 'ellipse':
-					// 	appendEllipseToDarkroom(darkroom, shape);
-					// 	break;
-					// case 'rectangle':
-					// 	appendRectangleToDarkroom(darkroom, shape);
-					// 	break;
 				}
 			}
 
@@ -360,62 +353,6 @@ They will record their feelings about the relation between the specified object 
 					.style({'stroke-width': 8, 'stroke': color, 'fill': shape.fill ? color : 'none'});
 			}
 
-			// function appendRectangleToDarkroom(darkroom, shape) {
-			// 	var x, y, width, height, rotation, stroke;
-			// 	switch (shape.size) {
-			// 		case 'small':
-			// 			width = 25; height = 15; stroke = 4;
-			// 			break;
-			// 		case 'medium':
-			// 			width = 75; height = 45; stroke = 12;
-			// 			break;
-			// 		case 'large':
-			// 			width = 125; height = 65; stroke = 22;
-			// 			break;
-			// 	}
-			// 	x = shape.x;
-			// 	y = shape.y;
-			// 	if (shape.rotation) rotation = getRotationString(shape.rotation, x+width/2, y+height/2);
-			// 	color = shape.color;
-
-			// 	darkroom.append('rect')
-			// 		.attr('id', 'shape'+reveals.length)
-			// 		.attr('x', x)
-			// 		.attr('y', y)
-			// 		.attr('width', width)
-			// 		.attr('height', height)
-			// 		.attr('transform', rotation ? rotation : '')
-			// 		.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
-			// }
-
-			// function appendEllipseToDarkroom(darkroom, shape) {
-			// 	var cx, cy, rx, ry, rotation, stroke;
-			// 	switch (shape.size) {
-			// 		case 'small':
-			// 			rx = 25; ry = 15; stroke = 4;
-			// 			break;
-			// 		case 'medium':
-			// 			rx = 75; ry = 45; stroke = 12;
-			// 			break;
-			// 		case 'large':
-			// 			rx = 125; ry = 65; stroke = 22;
-			// 			break;
-			// 	}
-			// 	cx = shape.x;
-			// 	cy = shape.y;
-			// 	color = shape.color;
-			// 	if (shape.rotation) rotation = getRotationString(shape.rotation, cx, cy);
-
-			// 	darkroom.append('ellipse')
-			// 		.attr('id', 'shape'+reveals.length)
-			// 		.attr('cx', cx)
-			// 		.attr('cy', cy)
-			// 		.attr('rx', rx)
-			// 		.attr('ry', ry)
-			// 		.attr('transform', rotation ? rotation : '')
-			// 		.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? shape.fill : 'none'});
-			// }
-
 			function getRotationString(rotationAngle, cx, cy) {
 				if (cx && cy) {
 					return 'rotate('+rotationAngle+','+cx+','+cy+')';
@@ -426,9 +363,9 @@ They will record their feelings about the relation between the specified object 
 
 			assignColorsToShapes();
 			initializeHTML();
-			// setupShapeButtons();
+			setupShapeButtons();
 			setupFormListener();
-			// revealTargetShape();
+			setupPatternListButtonListener();
 			setupNextButtonListener();
 
 			function submitImpression(reveals, pattern, confidence, randomConfidence) {
@@ -458,27 +395,40 @@ They will record their feelings about the relation between the specified object 
 		  			"<svg id='patternImageContainer'></svg>" +
 		  		"</div>" +
   				"<div id='patternSelectionDiv'>" +
-  					"<label id='patternSelectionLabel'>Select pattern:</label>" +
+  					"<p><strong><ins>Select pattern:</ins></strong></p>" +
 	  				"<select id='patternSelection'></select>" +
   				"</div>" +
   				"<div id='confidenceSelectionDiv'>" +
+  					"<p><strong><ins>How confident are you?</ins></strong></p>" +
+  					"<p style='font-size:10pt'>" +
+  						"<i>I'm only guessing.</i>" +
+  						"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block; margin-left: 5%; margin-right: 5%'></input>" +
+  						"<i>I'm certain.</i>" +
+  					"</p>" +
 	  				"<label for='confidence'>" +
-	  				  "Confidence = <span id='confidence-value' style='display: inline-block'>…</span>" +
+	  				  "Confidence = <span id='confidence-value' style='display: inline-block; margin: auto'>…</span>" +
 	  				"</label>" +
-  					"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block'>" +
   				"</div>" +
   				"<div id='randomSelectionDiv'>" +
+  					"<p><strong><ins>How confident are you this is random?</ins></strong></p>" +
+  					"<p style='font-size:10pt'>" +
+  						"<i>I'm only guessing.</i>" +
+  						"<input type='range' id='random-confidence' min='0' max='100' step='1' style='display: inline-block; margin-left: 5%; margin-right: 5%'></input>" +
+  						"<i>I'm certain.</i>" +
+  					"</p>" +
   					"<label for='random'>" +
-  						"Random confidence = <span id='random-confidence-value' style='display: inline-block'>...</span>" +
+  						"Random confidence = <span id='random-confidence-value' style='display: inline-block; margin: auto'>...</span>" +
   					"</label>" +
-  					"<input type='range' id='random-confidence' min='0' max='100' step='1' style='display: inline-block'>" +
   				"</div>" +
-  				"<button style='margin-top: 2%; margin-left: 5%; width: 40%;' id='submit'>Submit</button>" +
+  				"<div id='submitButtonDiv'>" +
+  					"<button style='float: right; width: 40%; margin-right: 5%' id='submit'>Submit</button>" +
+  				"</div>" +
 	  		"</div>" +
 	  	"</div>" +
-	  	"<div id='patternImageList'>" +
+	  	"<div id='patternListButtonDiv'>" +
+	  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: left;' id='patternListButton'>Patterns</button>" +
 	  	"</div>" +
-	  	"<div>" +
+	  	"<div id='nextButtonDiv'>" +
 	  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: right;' id='next'>Next area</button>" +
 	  	"</div>";
 
