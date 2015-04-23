@@ -94,25 +94,6 @@
     }
 
     function parseStimuliCSV(callback) {
-        // d3.csv.parse(stimuliCSV)
-        //     .row(function(d) {
-        //         return {
-        //             stimulusNum: d.stimulusNum
-        //           , patternName: d.patternName
-        //           , pairNumber: d.pairNumber
-        //           , leftRevealOrder: d.leftRevealOrder
-        //           , leftShape: d.leftShape
-        //           , leftSize: d.leftSize
-        //           , leftFill: d.leftFill
-        //           , rightRevealOrder: d.rightRevealOrder
-        //           , rightShape: d.rightShape
-        //           , rightSize: d.rightSize
-        //           , rightFill: d.rightFill
-        //           , xPos: d.xPos
-        //           , yPos: d.yPos
-        //         }
-        //     })
-        // .get(callback);
         var rows = d3.csv.parse(stimuliCSV, function(d) {
             return {
                 stimulusNum: d.stimulusNum

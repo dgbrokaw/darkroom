@@ -97,9 +97,9 @@ They will record their feelings about the relation between the specified object 
 
 			function setupShapeButtons() {
 				var x = 4;
-				for (var i=1; i<10; i++) {
+				for (var i=1; i<11; i++) {
 					var b = d3.select('#buttonArea1').append('button')
-						.attr('id', 'button1-'+i)
+						.attr('id', 'button-1-'+i)
 						.classed('shapeButton', true)
 						.style({'left': x+Math.random()*3+'%'});
 					b.on('click', function() {
@@ -109,9 +109,9 @@ They will record their feelings about the relation between the specified object 
 					x += 4;
 				}
 				x = 4;
-				for (var i=1; i<10; i++) {
+				for (var i=1; i<11; i++) {
 					var b = d3.select('#buttonArea2').append('button')
-						.attr('id', 'button2-'+i)
+						.attr('id', 'button-2-'+i)
 						.classed('shapeButton', true)
 						.style({'left': x+Math.random()*5+'%'})
 					b.on('click', function() {
@@ -224,8 +224,10 @@ They will record their feelings about the relation between the specified object 
 			}
 
 			function revealShape(buttonID) {
-				var dependency = parseInt(buttonID.slice(-3, -2))===1 ? 'independent' : 'dependent'
-				   ,idxOfShape = parseInt(buttonID.slice(-1))
+				var parts = buttonID.split('-');
+
+				var dependency = parseInt(parts[1])===1 ? 'independent' : 'dependent'
+				   ,idxOfShape = parseInt(parts[2])
 				   ,shape = dependency==='independent' ? getShapeByIDX(trial.independentShapes, idxOfShape) : getShapeByIDX(trial.dependentShapes, idxOfShape);
 				var darkroom = d3.select(dependency==='independent' ? '#darkroom1' : '#darkroom2');
 
@@ -281,9 +283,8 @@ They will record their feelings about the relation between the specified object 
 						break;
 				}
 				height = width;
-				x = shape.x;
-				y = shape.y;
-				if (shape.rotation) rotation = getRotationString(shape.rotation, x+width/2, y+height/2);
+				x = shape.x - width/2;
+				y = shape.y - height/2;
 				color = shape.color;
 
 				darkroom.append('rect')
@@ -292,7 +293,6 @@ They will record their feelings about the relation between the specified object 
 					.attr('y', y)
 					.attr('width', width)
 					.attr('height', height)
-					.attr('transform', rotation ? rotation : '')
 					.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? color : 'none'});
 			}
 
@@ -337,18 +337,16 @@ They will record their feelings about the relation between the specified object 
 						scale = 3; strokeWidth = 2.65;
 						break;
 				}
-				x = shape.x;
-				y = shape.y;
+				x = shape.x - scale;
+				y = shape.y - scale;
 				color = shape.color;
-				if (shape.rotation) rotation = getRotationString(shape.rotation, 55, 25);
 
 				var transform = 'translate('+x+','+y+')' +
-												(rotation ? rotation : '') +
 												' scale('+scale+')';
 
 				darkroom.append('polygon')
 					.attr('id', 'shape'+reveals.length)
-					.attr('points', '25,0 50,40 0,40')
+					.attr('points', '0,-20 25,20 -25,20')
 					.attr('transform', transform)
 					.style({'stroke-width': 8, 'stroke': color, 'fill': shape.fill ? color : 'none'});
 			}
