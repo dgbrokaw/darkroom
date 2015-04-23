@@ -127,13 +127,13 @@ They will record their feelings about the relation between the specified object 
 					updateConfidence(+this.value);
 				});
 
-				updateConfidence(0);
+				updateConfidence(100);
 
 				d3.select('#random-confidence').on('input', function() {
 					updateRandomConfidence(+this.value);
 				});
 
-				updateRandomConfidence(0);
+				updateRandomConfidence(100);
 
 				d3.select('#patternSelection').on('change', function() {
 					displaySelectedPatternImage();
@@ -266,6 +266,7 @@ They will record their feelings about the relation between the specified object 
 				}
 			}
 
+
 			function appendSquareToDarkroom(darkroom, shape) {
 				var x, y, width, height, rotation, color, stroke;
 				switch (shape.size) {
@@ -274,12 +275,12 @@ They will record their feelings about the relation between the specified object 
 						stroke = 4;
 						break;
 					case 'medium':
-						width = 75;
-						stroke = 12;
+						width = 50;
+						stroke = 8;
 						break;
 					case 'large':
-						width = 125;
-						stroke = 22;
+						width = 110;
+						stroke = 14;
 						break;
 				}
 				height = width;
@@ -304,12 +305,12 @@ They will record their feelings about the relation between the specified object 
 						stroke = 4;
 						break;
 					case 'medium':
-						r = 75/2;
-						stroke = 12;
+						r = 50/2;
+						stroke = 8;
 						break;
 					case 'large':
-						r = 125/2;
-						stroke = 22;
+						r = 110/2;
+						stroke = 14;
 						break;
 				}
 				x = shape.x;
@@ -328,17 +329,17 @@ They will record their feelings about the relation between the specified object 
 				var x, y, scale, rotation, strokeWidth, stroke;
 				switch (shape.size) {
 					case 'small':
-						scale = 0.5; strokeWidth = 16;
+						scale = 0.5; strokeWidth = 12;
 						break;
 					case 'medium':
-						scale = 1.5; strokeWidth = 5.35;
+						scale = 1.3; strokeWidth = 3;
 						break;
 					case 'large':
-						scale = 3; strokeWidth = 2.65;
+						scale = 2.5; strokeWidth = 2.80;
 						break;
 				}
-				x = shape.x - scale;
-				y = shape.y - scale;
+				x = shape.x;
+				y = shape.y;
 				color = shape.color;
 
 				var transform = 'translate('+x+','+y+')' +
@@ -350,6 +351,92 @@ They will record their feelings about the relation between the specified object 
 					.attr('transform', transform)
 					.style({'stroke-width': 8, 'stroke': color, 'fill': shape.fill ? color : 'none'});
 			}
+
+
+			// function appendSquareToDarkroom(darkroom, shape) {
+			// 	var x, y, width, height, rotation, color, stroke;
+			// 	switch (shape.size) {
+			// 		case 'small':
+			// 			width = 25;
+			// 			stroke = 4;
+			// 			break;
+			// 		case 'medium':
+			// 			width = 75;
+			// 			stroke = 12;
+			// 			break;
+			// 		case 'large':
+			// 			width = 125;
+			// 			stroke = 22;
+			// 			break;
+			// 	}
+			// 	height = width;
+			// 	x = shape.x - width/2;
+			// 	y = shape.y - height/2;
+			// 	color = shape.color;
+
+			// 	darkroom.append('rect')
+			// 		.attr('id', 'shape'+reveals.length)
+			// 		.attr('x', x)
+			// 		.attr('y', y)
+			// 		.attr('width', width)
+			// 		.attr('height', height)
+			// 		.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? color : 'none'});
+			// }
+
+			// function appendCircleToDarkroom(darkroom, shape) {
+			// 	var cx, cy, r, stroke;
+			// 	switch (shape.size) {
+			// 		case 'small':
+			// 			r = 25/2;
+			// 			stroke = 4;
+			// 			break;
+			// 		case 'medium':
+			// 			r = 75/2;
+			// 			stroke = 12;
+			// 			break;
+			// 		case 'large':
+			// 			r = 125/2;
+			// 			stroke = 22;
+			// 			break;
+			// 	}
+			// 	x = shape.x;
+			// 	y = shape.y;
+			// 	color = shape.color;
+
+			// 	darkroom.append('circle')
+			// 		.attr('id', 'shape'+reveals.length)
+			// 		.attr('cx', x)
+			// 		.attr('cy', y)
+			// 		.attr('r', r)
+			// 		.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? color : 'none'});
+			// }
+
+			// function appendTriangleToDarkroom(darkroom, shape) {
+			// 	var x, y, scale, rotation, strokeWidth, stroke;
+			// 	switch (shape.size) {
+			// 		case 'small':
+			// 			scale = 0.5; strokeWidth = 16;
+			// 			break;
+			// 		case 'medium':
+			// 			scale = 1.5; strokeWidth = 5.35;
+			// 			break;
+			// 		case 'large':
+			// 			scale = 3; strokeWidth = 2.65;
+			// 			break;
+			// 	}
+			// 	x = shape.x - scale;
+			// 	y = shape.y - scale;
+			// 	color = shape.color;
+
+			// 	var transform = 'translate('+x+','+y+')' +
+			// 									' scale('+scale+')';
+
+			// 	darkroom.append('polygon')
+			// 		.attr('id', 'shape'+reveals.length)
+			// 		.attr('points', '0,-20 25,20 -25,20')
+			// 		.attr('transform', transform)
+			// 		.style({'stroke-width': 8, 'stroke': color, 'fill': shape.fill ? color : 'none'});
+			// }
 
 			function getRotationString(rotationAngle, cx, cy) {
 				if (cx && cy) {
