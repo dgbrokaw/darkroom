@@ -40,8 +40,6 @@ They will record their feelings about the relation between the specified object 
 
 			// trial = jsPsych.pluginAPI.normalizeTrialVariables(trial);
 
-			console.log(trial.stimulusNum)
-
 			var reveals = [];
 			var trial_data = [];
 
