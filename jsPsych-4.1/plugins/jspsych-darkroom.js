@@ -5,6 +5,9 @@ They will record their feelings about the relation between the specified object 
 
 */
 
+// TODO: proper logic for next button changing.
+// make sure reveals logic is correct
+
 (function($) {
 	jsPsych['darkroom'] = (function() {
 
@@ -101,11 +104,8 @@ They will record their feelings about the relation between the specified object 
 					var b = d3.select('#buttonArea1').append('button')
 						.attr('id', 'button-1-'+i)
 						.classed('shapeButton', true)
+						.attr('disabled', true)
 						.style({'left': x+Math.random()*3+'%'});
-					b.on('click', function() {
-						disableButton(this);
-						revealShape(this.id);
-					});
 					x += 4;
 				}
 				x = 4;
@@ -113,11 +113,8 @@ They will record their feelings about the relation between the specified object 
 					var b = d3.select('#buttonArea2').append('button')
 						.attr('id', 'button-2-'+i)
 						.classed('shapeButton', true)
+						.attr('disabled', true)
 						.style({'left': x+Math.random()*5+'%'})
-					b.on('click', function() {
-						disableButton(this);
-						revealShape(this.id);
-					});
 					x += 4;
 				}
 			}
@@ -207,8 +204,32 @@ They will record their feelings about the relation between the specified object 
 						.attr('xlink:href', function(d) {return 'patternImages/'+d.image});
 			}
 
-			function setupNextButtonListener() {
-				d3.select('#next').on('click', function() {
+			// these following setups are associated with the 'advance' button
+			function setupShowMeMoreButtonListener() {
+				var button = d3.select('#advance');
+
+				button.property('disabled', false);
+
+				button.property('value', 'Show me more');
+				button.text('Show me more');
+				button.style({'background': '#eaeaea'});
+
+				button.on('click', function() {
+					disableShowMeMoreButton(this);
+					revealShapes();
+				});
+			}
+
+			function setupNextAreaButtonListener() {
+				var button = d3.select('#advance');
+
+				button.property('disabled', false);
+
+				button.property('value', 'Go to the next area');
+				button.text('Go to the next area');
+				button.style({'background': '#eaeaea'});
+
+				button.on('click', function() {
 					submitImpression(reveals
 												 	,d3.select('#patternSelection').property('value')
 												 	,d3.select('#confidence').property('value')
@@ -219,33 +240,93 @@ They will record their feelings about the relation between the specified object 
 				})
 			}
 
-			function disableButton(button) {
-				d3.select(button).property('hidden', true);
+			function disableShowMeMoreButton() {
+				var button = d3.select('#advance');
+
+				button.property('disabled', true);
+
+				button.property('value', 'Tell us what you think');
+				button.text('Tell us what you think');
+				button.style({'background': '#C0C0C0'})
 			}
 
-			function revealShape(buttonID) {
-				var parts = buttonID.split('-');
+			function disableShapeButton(shape) {
+				var buttonID = '#button-';
+				if (shape.isIndependent) {
+					buttonID += '1-'
+				} else {
+					buttonID += '2-'
+				}
+				buttonID += shape.pairNum;
 
-				var dependency = parseInt(parts[1])===1 ? 'independent' : 'dependent'
-				   ,idxOfShape = parseInt(parts[2])
-				   ,shape = dependency==='independent' ? getShapeByIDX(trial.independentShapes, idxOfShape) : getShapeByIDX(trial.dependentShapes, idxOfShape);
-				var darkroom = d3.select(dependency==='independent' ? '#darkroom1' : '#darkroom2');
+				d3.select(buttonID).style({'background': 'ghostwhite'});
+			}
+
+			function revealShapes() {
+				var newIndependentShape = getUnusedRandomShape(trial.independentShapes)
+				   ,newDependentShape = getUnusedRandomShape(trial.dependentShapes);
+
+				disableShapeButton(newIndependentShape);
+				disableShapeButton(newDependentShape);
+
+				revealShape(newIndependentShape);
+				revealShape(newDependentShape);
+
+				while (!aNewCompletePairHasBeenRevealed(newIndependentShape, newDependentShape)) {
+					newIndependentShape = getUnusedRandomShape(trial.independentShapes)
+				 ,newDependentShape = getUnusedRandomShape(trial.dependentShapes);
+
+					disableShapeButton(newIndependentShape);
+					disableShapeButton(newDependentShape);
+
+					revealShape(newIndependentShape);
+					revealShape(newDependentShape);
+				}
+			}
+
+			function getUnusedRandomShape(shapes) {
+				var tries = 1;
+				var randomIDX = Math.floor(Math.random()*shapes.length);
+				var randomShape = shapes[randomIDX];
+				while (shapeHasAlreadyBeenRevealed(randomShape)) {
+					randomIDX = Math.floor(Math.random()*shapes.length);
+					randomShape = shapes[randomIDX];
+					tries++
+				}
+				return randomShape;
+			}
+
+			function shapeHasAlreadyBeenRevealed(shape) {
+				for (var i=0; i<reveals.length; i++) {
+					if (reveals[i].shapeID === shape.shapeID) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			function aNewCompletePairHasBeenRevealed(newIndependentShape, newDependentShape) {
+				for (var i=0; i<reveals.length; i++) {
+					if (reveals[i].shapeID!==newIndependentShape.shapeID && reveals[i].pairNum===newIndependentShape.pairNum) {
+						return true;
+					}
+				}
+				for (var i=0; i<reveals.length; i++) {
+					if (reveals[i].shapeID!==newDependentShape.shapeID && reveals[i].pairNum===newDependentShape.pairNum) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			function revealShape(shape) {
+				var darkroom = d3.select(shape.isIndependent ? '#darkroom1' : '#darkroom2');
 
 				console.log(shape);
 				if (shape) {
 					reveals.push(shape);
 					appendShapeToDarkroom(darkroom, shape);
 				}
-			}
-
-			function getShapeByIDX(shapes, idx) {
-				for (var i=0; i<shapes.length; i++) {
-					var s = shapes[i];
-					if (s.buttonNum===idx) {
-						return s;
-					}
-				}
-				return null;
 			}
 
 			function appendShapeToDarkroom(darkroom, shape) {
@@ -265,7 +346,6 @@ They will record their feelings about the relation between the specified object 
 						break;
 				}
 			}
-
 
 			function appendSquareToDarkroom(darkroom, shape) {
 				var x, y, width, height, rotation, color, stroke;
@@ -352,92 +432,6 @@ They will record their feelings about the relation between the specified object 
 					.style({'stroke-width': 8, 'stroke': color, 'fill': shape.fill ? color : 'none'});
 			}
 
-
-			// function appendSquareToDarkroom(darkroom, shape) {
-			// 	var x, y, width, height, rotation, color, stroke;
-			// 	switch (shape.size) {
-			// 		case 'small':
-			// 			width = 25;
-			// 			stroke = 4;
-			// 			break;
-			// 		case 'medium':
-			// 			width = 75;
-			// 			stroke = 12;
-			// 			break;
-			// 		case 'large':
-			// 			width = 125;
-			// 			stroke = 22;
-			// 			break;
-			// 	}
-			// 	height = width;
-			// 	x = shape.x - width/2;
-			// 	y = shape.y - height/2;
-			// 	color = shape.color;
-
-			// 	darkroom.append('rect')
-			// 		.attr('id', 'shape'+reveals.length)
-			// 		.attr('x', x)
-			// 		.attr('y', y)
-			// 		.attr('width', width)
-			// 		.attr('height', height)
-			// 		.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? color : 'none'});
-			// }
-
-			// function appendCircleToDarkroom(darkroom, shape) {
-			// 	var cx, cy, r, stroke;
-			// 	switch (shape.size) {
-			// 		case 'small':
-			// 			r = 25/2;
-			// 			stroke = 4;
-			// 			break;
-			// 		case 'medium':
-			// 			r = 75/2;
-			// 			stroke = 12;
-			// 			break;
-			// 		case 'large':
-			// 			r = 125/2;
-			// 			stroke = 22;
-			// 			break;
-			// 	}
-			// 	x = shape.x;
-			// 	y = shape.y;
-			// 	color = shape.color;
-
-			// 	darkroom.append('circle')
-			// 		.attr('id', 'shape'+reveals.length)
-			// 		.attr('cx', x)
-			// 		.attr('cy', y)
-			// 		.attr('r', r)
-			// 		.style({'stroke-width': stroke, 'stroke': color, 'fill': shape.fill ? color : 'none'});
-			// }
-
-			// function appendTriangleToDarkroom(darkroom, shape) {
-			// 	var x, y, scale, rotation, strokeWidth, stroke;
-			// 	switch (shape.size) {
-			// 		case 'small':
-			// 			scale = 0.5; strokeWidth = 16;
-			// 			break;
-			// 		case 'medium':
-			// 			scale = 1.5; strokeWidth = 5.35;
-			// 			break;
-			// 		case 'large':
-			// 			scale = 3; strokeWidth = 2.65;
-			// 			break;
-			// 	}
-			// 	x = shape.x - scale;
-			// 	y = shape.y - scale;
-			// 	color = shape.color;
-
-			// 	var transform = 'translate('+x+','+y+')' +
-			// 									' scale('+scale+')';
-
-			// 	darkroom.append('polygon')
-			// 		.attr('id', 'shape'+reveals.length)
-			// 		.attr('points', '0,-20 25,20 -25,20')
-			// 		.attr('transform', transform)
-			// 		.style({'stroke-width': 8, 'stroke': color, 'fill': shape.fill ? color : 'none'});
-			// }
-
 			function getRotationString(rotationAngle, cx, cy) {
 				if (cx && cy) {
 					return 'rotate('+rotationAngle+','+cx+','+cy+')';
@@ -451,7 +445,7 @@ They will record their feelings about the relation between the specified object 
 			setupShapeButtons();
 			setupFormListener();
 			setupPatternListButtonListener();
-			setupNextButtonListener();
+			setupShowMeMoreButtonListener();
 
 			function submitImpression(reveals, pattern, confidence, randomConfidence) {
 				console.log(reveals, pattern, confidence, randomConfidence);
@@ -461,6 +455,12 @@ They will record their feelings about the relation between the specified object 
 					               					 ,userPattern: pattern
 					               					 ,userConfidence: confidence
 					               					 ,userRandomConfidence: randomConfidence}});
+
+				if (reveals.length === trial.independentShapes.length+trial.dependentShapes.length) {
+					setupNextAreaButtonListener();
+				} else {
+					setupShowMeMoreButtonListener();
+				}
 			}
 		}
 
@@ -513,8 +513,8 @@ They will record their feelings about the relation between the specified object 
 	  	"<div id='patternListButtonDiv'>" +
 	  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: left;' id='patternListButton'>Patterns</button>" +
 	  	"</div>" +
-	  	"<div id='nextButtonDiv'>" +
-	  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: right;' id='next'>Next area</button>" +
+	  	"<div id='advanceButtonDiv'>" +
+	  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: right;' id='advance'>Show me more</button>" +
 	  	"</div>";
 
 		return plugin;

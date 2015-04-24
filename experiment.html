@@ -35,6 +35,10 @@
          ,image: 'Circle-Square-Triangle.png'
         }
      ,{
+            description: 'Circle-Triangle-Square'
+         ,image: 'Circle-Triangle-Square.png'
+        }
+     ,{
             description: 'Large-Medium-Small'
          ,image: 'Large-Medium-Small.png'
         }
@@ -44,23 +48,7 @@
         }
      ,{
             description: 'Not-Filled--Filled'
-         ,image: 'Large-Medium-Small.png'
-        }
-     ,{
-            description: 'Circle-Triangle-Square'
-         ,image: 'Circle-Triangle-Square.png'
-        }
-     ,{
-            description: 'Small-Medium-Large'
-         ,image: 'Small-Medium-Large.png'
-        }
-     ,{
-            description: 'Small-Medium-Large'
-         ,image: 'Small-Medium-Large.png'
-        }
-     ,{
-            description: 'Small-Medium-Large'
-         ,image: 'Small-Medium-Large.png'
+         ,image: 'Not-Fill-Filled.png'
         }
     ]
 
@@ -120,39 +108,45 @@
 
         var trial;
         for (var i=0; i<rows.length; i++) {
-            var r = rows[i];
-            if (r.stimulusNum!==currTrialNum) {
-                if (r.stimulusNum>1) {
-                    trials.push(trial);
-                }
-                currTrialNum = r.stimulusNum;
-                trial = {
-                  options: extend({}, options)
-                , independentShapes: []
-                , dependentShapes: []
-                , patterns: patterns
-                , correctPattern: r.patternName
-                };
-            }
-            var independentShape = {}
-               ,dependentShape = {};
+          var r = rows[i];
+          if (r.stimulusNum!==currTrialNum) {
+              if (r.stimulusNum>1) {
+                  trials.push(trial);
+              }
+              currTrialNum = r.stimulusNum;
+              trial = {
+                options: extend({}, options)
+              , independentShapes: []
+              , dependentShapes: []
+              , patterns: patterns
+              , correctPattern: r.patternName
+              };
+          }
+          var independentShape = {}
+             ,dependentShape = {};
 
-            independentShape.type = r.leftShape.toLowerCase();
-            independentShape.size = r.leftSize.toLowerCase();
-            independentShape.fill = r.leftFill==='Solid Fill' ? true : false;
-            independentShape.x = r.xPos;
-            independentShape.y = r.yPos;
-            independentShape.buttonNum = parseInt(r.leftRevealOrder);
+          independentShape.pairNum = parseInt(r.pairNumber);
+          independentShape.shapeID = uid().substr(1,6).toUpperCase();
+          independentShape.type = r.leftShape.toLowerCase();
+          independentShape.size = r.leftSize.toLowerCase();
+          independentShape.fill = r.leftFill==='Solid Fill' ? true : false;
+          independentShape.x = r.xPos;
+          independentShape.y = r.yPos;
+          independentShape.buttonNum = parseInt(r.leftRevealOrder);
+          independentShape.isIndependent = true;
 
-            dependentShape.type = r.rightShape.toLowerCase();
-            dependentShape.size = r.rightSize.toLowerCase();
-            dependentShape.fill = r.rightFill==='Solid Fill' ? true : false;
-            dependentShape.x = r.xPos;
-            dependentShape.y = r.yPos;
-            dependentShape.buttonNum = parseInt(r.rightRevealOrder);
+          dependentShape.shapeID = uid().substr(1,6).toUpperCase();
+          dependentShape.pairNum = parseInt(r.pairNumber);
+          dependentShape.type = r.rightShape.toLowerCase();
+          dependentShape.size = r.rightSize.toLowerCase();
+          dependentShape.fill = r.rightFill==='Solid Fill' ? true : false;
+          dependentShape.x = r.xPos;
+          dependentShape.y = r.yPos;
+          dependentShape.buttonNum = parseInt(r.rightRevealOrder);
+          dependentShape.isIndependent = false;
 
-            trial.independentShapes.push(independentShape);
-            trial.dependentShapes.push(dependentShape);
+          trial.independentShapes.push(independentShape);
+          trial.dependentShapes.push(dependentShape);
         }
 
         trials.push(trial);
