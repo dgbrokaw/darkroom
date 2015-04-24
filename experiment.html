@@ -7,7 +7,7 @@
         <script src="libs/d3.min.js"></script>
         <script src="jsPsych-4.1/plugins/jspsych-text.js"></script>
         <script src="jsPsych-4.1/plugins/jspsych-darkroom.js"></script>
-        <script src="stimuliData.js"></script>
+        <script src="stimuliData-v1.js"></script>
         <link href="jsPsych-4.1/css/jspsych.css" rel="stylesheet" type="text/css"></link>
         <link href="jsPsych-4.1/css/darkroom.css" rel="stylesheet" type="text/css"></link>
     </head>
@@ -116,6 +116,7 @@
               currTrialNum = r.stimulusNum;
               trial = {
                 options: extend({}, options)
+              , stimulusNum: r.stimulusNum
               , independentShapes: []
               , dependentShapes: []
               , patterns: patterns

@@ -35,8 +35,16 @@ p {
 .darkroom {
 	background: black;
 	width: 100%;
-	height: 90%;
+	height: 85%;
 	margin: 0 5% 0 0;
+	/*overflow: visible;*/
+}
+
+.attributeIdentifierText {
+	height: 5%;
+	font: italic;
+	font-size: 12pt;
+	margin: auto;
 }
 
 .clear {

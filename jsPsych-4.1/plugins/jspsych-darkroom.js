@@ -23,6 +23,7 @@ They will record their feelings about the relation between the specified object 
 				var trial = {};
 				var stimulus = params.stimuli[i];
 
+				trial.stimulusNum = stimulus.stimulusNum;
 				trial.options = stimulus.options;
 				trial.independentShapes = stimulus.independentShapes;
 				trial.dependentShapes = stimulus.dependentShapes;
@@ -38,6 +39,8 @@ They will record their feelings about the relation between the specified object 
 		plugin.trial = function(display_element, trial) {
 
 			// trial = jsPsych.pluginAPI.normalizeTrialVariables(trial);
+
+			console.log(trial.stimulusNum)
 
 			var reveals = [];
 			var trial_data = [];
@@ -212,7 +215,7 @@ They will record their feelings about the relation between the specified object 
 
 				button.property('value', 'Show me more');
 				button.text('Show me more');
-				button.style({'background': '#eaeaea'});
+				button.style({'background': 'lightgreen'});
 
 				button.on('click', function() {
 					disableShowMeMoreButton(this);
@@ -227,7 +230,7 @@ They will record their feelings about the relation between the specified object 
 
 				button.property('value', 'Go to the next area');
 				button.text('Go to the next area');
-				button.style({'background': '#eaeaea'});
+				button.style({'background': 'lightgreen'});
 
 				button.on('click', function() {
 					submitImpression(reveals
@@ -247,7 +250,9 @@ They will record their feelings about the relation between the specified object 
 
 				button.property('value', 'Tell us what you think');
 				button.text('Tell us what you think');
-				button.style({'background': '#C0C0C0'})
+				button.style({'background': '#C0C0C0'});
+
+				d3.select('#submit').style('background', 'lightgreen');
 			}
 
 			function disableShapeButton(shape) {
@@ -334,17 +339,29 @@ They will record their feelings about the relation between the specified object 
 				   ,height = darkroom.property('height').baseVal.value;
 				shape.x = shape.x*width*0.90;
 				shape.y = shape.y*height*0.90;
+
+				var shapeElement;
 				switch (shape.type) {
 					case 'square':
-						appendSquareToDarkroom(darkroom, shape);
+						shapeElement = appendSquareToDarkroom(darkroom, shape);
 						break;
 					case 'circle':
-						appendCircleToDarkroom(darkroom, shape);
+						shapeElement = appendCircleToDarkroom(darkroom, shape);
 						break;
 					case 'triangle':
-						appendTriangleToDarkroom(darkroom, shape);
+						shapeElement = appendTriangleToDarkroom(darkroom, shape);
 						break;
 				}
+
+				var attributeIdentifierText;
+				shapeElement.on('mouseover', function() {
+					attributeIdentifierText = d3.select(shape.isIndependent ? '#darkroomArea1' : '#darkroomArea2').append('div')
+						.classed('attributeIdentifierText', true)
+						.text(shape.type + '; ' + shape.size + '; ' + (shape.fill ? 'filled' : 'not filled'));
+				});
+				shapeElement.on('mouseout', function() {
+					attributeIdentifierText.remove();
+				});
 			}
 
 			function appendSquareToDarkroom(darkroom, shape) {
@@ -368,7 +385,7 @@ They will record their feelings about the relation between the specified object 
 				y = shape.y - height/2;
 				color = shape.color;
 
-				darkroom.append('rect')
+				return darkroom.append('rect')
 					.attr('id', 'shape'+reveals.length)
 					.attr('x', x)
 					.attr('y', y)
@@ -397,7 +414,7 @@ They will record their feelings about the relation between the specified object 
 				y = shape.y;
 				color = shape.color;
 
-				darkroom.append('circle')
+				return darkroom.append('circle')
 					.attr('id', 'shape'+reveals.length)
 					.attr('cx', x)
 					.attr('cy', y)
@@ -425,7 +442,7 @@ They will record their feelings about the relation between the specified object 
 				var transform = 'translate('+x+','+y+')' +
 												' scale('+scale+')';
 
-				darkroom.append('polygon')
+				return darkroom.append('polygon')
 					.attr('id', 'shape'+reveals.length)
 					.attr('points', '0,-20 25,20 -25,20')
 					.attr('transform', transform)
@@ -448,6 +465,7 @@ They will record their feelings about the relation between the specified object 
 			setupShowMeMoreButtonListener();
 
 			function submitImpression(reveals, pattern, confidence, randomConfidence) {
+				d3.select('#submit').style('background', '#eaeaea')
 				console.log(reveals, pattern, confidence, randomConfidence);
 				trial_data.push({subjectID: subject_id
 					              ,reveals: reveals
