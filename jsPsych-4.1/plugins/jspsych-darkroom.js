@@ -43,8 +43,8 @@ They will record their feelings about the relation between the specified object 
 
 			var reveals = [];
 			var trial_data = [];
-			var lastConfidenceLevel = 100
-			   ,lastRandomConfidenceLevel = 100;
+			var lastConfidenceLevel = 100;
+			   // ,lastRandomConfidenceLevel = 100;
 
 			function assignColorsToShapes() {
 				var scale = d3.scale.category20();
@@ -74,7 +74,8 @@ They will record their feelings about the relation between the specified object 
 
 			function disableRandomSlider(sliderForRandom) {
 				if (!sliderForRandom) {
-					d3.select('#randomSelectionDiv').node().hidden = true;
+					//d3.select('#randomSelectionDiv').node().hidden = true;
+					d3.select('#randomSelectionDiv').remove();
 				}
 			}
 
@@ -132,11 +133,11 @@ They will record their feelings about the relation between the specified object 
 
 				updateConfidence(100);
 
-				d3.select('#random-confidence').on('input', function() {
-					updateRandomConfidence(+this.value);
-				});
+				// d3.select('#random-confidence').on('input', function() {
+				// 	updateRandomConfidence(+this.value);
+				// });
 
-				updateRandomConfidence(100);
+				//updateRandomConfidence(100);
 
 				d3.select('#patternSelection').on('change', function() {
 					displaySelectedPatternImage();
@@ -145,8 +146,8 @@ They will record their feelings about the relation between the specified object 
 				d3.select('#submit').on('click', function() {
 					submitImpression(reveals
 												 	,d3.select('#patternSelection').property('value')
-												 	,d3.select('#confidence').property('value')
-												 	,d3.select('#random-confidence').property('value'));
+												 	,d3.select('#confidence').property('value'));
+												 	// ,d3.select('#random-confidence').property('value'));
 				});
 			}
 
@@ -265,8 +266,8 @@ They will record their feelings about the relation between the specified object 
 				button.on('click', function() {
 					submitImpression(reveals
 												 	,d3.select('#patternSelection').property('value')
-												 	,d3.select('#confidence').property('value')
-												 	,d3.select('#random-confidence').property('value'));
+												 	,d3.select('#confidence').property('value'));
+												 	// ,d3.select('#random-confidence').property('value'));
 					jsPsych.data.write($.extend({}, {trial: trial}, {impressions: trial_data}));
 					display_element.html('');
 					jsPsych.finishTrial();
@@ -496,12 +497,12 @@ They will record their feelings about the relation between the specified object 
 			setupShowMeMoreButtonListener();
 
 			function submitImpression(reveals, pattern, confidence, randomConfidence) {
-				if (parseInt(confidence)===lastConfidenceLevel || parseInt(randomConfidence)===lastRandomConfidenceLevel) {
-					d3.select('#pleaseAdjustSliders').text('Please adjust both sliders.');
+				if (parseInt(confidence)===lastConfidenceLevel ) {//|| parseInt(randomConfidence)===lastRandomConfidenceLevel) {
+					d3.select('#pleaseAdjustSliders').text('Please adjust the slider.');
 					return;
 				} else {
 					lastConfidenceLevel = parseInt(confidence);
-					lastRandomConfidenceLevel = parseInt(randomConfidence);
+					// lastRandomConfidenceLevel = parseInt(randomConfidence);
 					d3.select('#pleaseAdjustSliders').text('');
 				}
 				d3.select('#submit').style('background', '#eaeaea')
@@ -510,8 +511,8 @@ They will record their feelings about the relation between the specified object 
 					              ,reveals: reveals
 				                ,userData: {time: jsPsych.totalTime()
 					               					 ,userPattern: pattern
-					               					 ,userConfidence: confidence
-					               					 ,userRandomConfidence: randomConfidence}});
+					               					 ,userConfidence: confidence}});
+					               					 // ,userRandomConfidence: randomConfidence}});
 
 				if (reveals.length === trial.independentShapes.length+trial.dependentShapes.length) {
 					setupNextAreaButtonListener();

@@ -19,11 +19,11 @@
 
     subject_id = uid().substr(1,6).toUpperCase();
 
-    var testMode = false;
+    var testMode = true;
     var options = {
         listPatternImages: true
       , showSliderNumericFeedback: false
-      , sliderForRandom: true
+      , sliderForRandom: false
     };
 
     var patterns = [
@@ -55,12 +55,22 @@
 
     var welcome_trial = {
     	type: 'text'
-     ,text: '<div id="welcome"><p id="participant_id">Participant ID: <span>'+subject_id+'</span></p><p>Welcome to the experiment.</br>Press enter to begin.</p></div>'
+     ,text: '<div id="instructionDiv"><div id="instructionText"><p id="participant_id">Participant ID: <span>'+subject_id+'</span></p></div><div id="instructionText"><p>Welcome to the experiment.</br>Press enter to begin.</p></div></div>'
     }
 
-    var instruction_block = {
+    var pre_instruction_trial = {
+      type: 'text'
+     ,text: '<div id="instructionDiv"><div id="instructionText">Be sure to read the instructions <i>carefully</i> because they contain important information about the job you must complete.<p>Press enter to begin.</div></div>'
+    }
+
+    var shape_instructions = {
+      type: 'text'
+     ,text: 'stuff'// TODO TAKE PICTURES OF SHAPES AND PUT THEM HERE WITH TEXT
+    }
+
+    var instruction_block1 = {
     	type: 'text'
-     ,text: setupInstructionPages(instructionPages)
+     ,text: setupInstructionPages(instructionPages[0])
     }
 
     var darkroom_block = {
@@ -71,7 +81,7 @@
     function startExperiment(mainTrials) {
         darkroom_block.stimuli = testMode ? mainTrials : shuffle(mainTrials).slice(10);
 
-        var timeline = testMode ? [darkroom_block] : [welcome_trial, instruction_block, darkroom_block];
+        var timeline = testMode ? [darkroom_block] : [welcome_trial, pre_instruction_trial, instruction_block1, darkroom_block];
 
         jsPsych.init({
             experiment_structure: timeline
@@ -108,10 +118,11 @@
       var pages = [];
       for (var i=0; i<instructionPages.length; i++) {
         var html = '<div id="instructionDiv">';
-        html += '<div id="instructionText"><p>' + instructionPages[i].text + ' Press enter to continue.</p></div>';
+        html += '<div id="instructionText"><p>' + instructionPages[i].text + '</p></div>';
         html += '<svg id="instructionImageContainer">' +
                   '<image xlink:href="instructionImages/' + instructionPages[i].image + '.png" width="100%" height="900px" x="0" y="0">' +
                 '</svg>';
+        html += '<p style="float: right; margin-top: 5%">Press enter to continue.</p>'
         html += '</div>'
         pages.push(html);
       }
