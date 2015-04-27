@@ -44,6 +44,7 @@ They will record their feelings about the relation between the specified object 
 			var reveals = [];
 			var trial_data = [];
 			var lastConfidenceLevel = 100;
+			var oneSubmission = false;
 			   // ,lastRandomConfidenceLevel = 100;
 
 			function assignColorsToShapes() {
@@ -500,14 +501,18 @@ They will record their feelings about the relation between the specified object 
 			setupShowMeMoreButtonListener();
 
 			function submitImpression(reveals, pattern, confidence, randomConfidence) {
-				if (parseInt(confidence)===lastConfidenceLevel) {//|| parseInt(randomConfidence)===lastRandomConfidenceLevel) {
+				if (!oneSubmission && parseInt(confidence)===lastConfidenceLevel) {
+					d3.select('#pleaseAdjustSliders').text('Please adjust the slider.');
+					return;
+				} else if (parseInt(confidence)!==100 && parseInt(confidence)===lastConfidenceLevel) {
 					d3.select('#pleaseAdjustSliders').text('Please adjust the slider.');
 					return;
 				} else {
 					lastConfidenceLevel = parseInt(confidence);
-					// lastRandomConfidenceLevel = parseInt(randomConfidence);
 					d3.select('#pleaseAdjustSliders').text('');
 				}
+
+				oneSubmission = true;
 				d3.select('#submit').style('background', '#eaeaea')
 				console.log(reveals, pattern, confidence, randomConfidence);
 				trial_data.push({subjectID: subject_id
