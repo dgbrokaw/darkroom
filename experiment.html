@@ -7,6 +7,7 @@
         <script src="libs/d3.min.js"></script>
         <script src="jsPsych-4.1/plugins/jspsych-text.js"></script>
         <script src="jsPsych-4.1/plugins/jspsych-darkroom.js"></script>
+        <script src="instruction-html.js"></script>
         <script src="stimuliData-v2.js"></script>
         <link href="jsPsych-4.1/css/jspsych.css" rel="stylesheet" type="text/css"></link>
         <link href="jsPsych-4.1/css/darkroom.css" rel="stylesheet" type="text/css"></link>
@@ -18,48 +19,48 @@
 
     subject_id = uid().substr(1,6).toUpperCase();
 
-    var testMode = true;
+    var testMode = false;
     var options = {
         listPatternImages: true
-      , showSliderNumericFeedback: true
+      , showSliderNumericFeedback: false
       , sliderForRandom: true
     };
 
     var patterns = [
-        {
-           description: 'Random'
-        ,  image: 'Random.png'
-        }
+      {
+        description: 'Random'
+       ,image: 'Random.png'
+      }
      ,{
-            description: 'Circle-Square-Triangle'
-         ,image: 'Circle-Square-Triangle.png'
-        }
+        description: 'Circle-Square-Triangle'
+       ,image: 'Circle-Square-Triangle.png'
+      }
      ,{
-            description: 'Circle-Triangle-Square'
-         ,image: 'Circle-Triangle-Square.png'
-        }
+        description: 'Circle-Triangle-Square'
+       ,image: 'Circle-Triangle-Square.png'
+      }
      ,{
-            description: 'Large-Medium-Small'
-         ,image: 'Large-Medium-Small.png'
-        }
+        description: 'Large-Medium-Small'
+       ,image: 'Large-Medium-Small.png'
+      }
      ,{
-            description: 'Small-Medium-Large'
-         ,image: 'Small-Medium-Large.png'
-        }
+        description: 'Small-Medium-Large'
+       ,image: 'Small-Medium-Large.png'
+      }
      ,{
-            description: 'Not-Filled--Filled'
-         ,image: 'Not-Fill-Filled.png'
-        }
+        description: 'Not-Filled--Filled'
+       ,image: 'Not-Fill-Filled.png'
+      }
     ]
 
     var welcome_trial = {
     	type: 'text'
-     ,text: 'Welcome to the experiment.  Press any key to begin.'
+     ,text: '<div id="welcome"><p id="participant_id">Participant ID: <span>'+subject_id+'</span></p><p>Welcome to the experiment.</br>Press enter to begin.</p></div>'
     }
 
-    var instruction_trial = {
+    var instruction_block = {
     	type: 'text'
-     ,text: 'Here are some instructions.  Press any key to continue.'
+     ,text: setupInstructionPages(instructionPages)
     }
 
     var darkroom_block = {
@@ -70,7 +71,7 @@
     function startExperiment(mainTrials) {
         darkroom_block.stimuli = testMode ? mainTrials : shuffle(mainTrials).slice(10);
 
-        var timeline = testMode ? [darkroom_block] : [welcome_trial, instruction_trial, darkroom_block];
+        var timeline = testMode ? [darkroom_block] : [welcome_trial, instruction_block, darkroom_block];
 
         jsPsych.init({
             experiment_structure: timeline
@@ -101,6 +102,20 @@
             }
         });
         callback(rows);
+    }
+
+    function setupInstructionPages(instructionPages) {
+      var pages = [];
+      for (var i=0; i<instructionPages.length; i++) {
+        var html = '<div id="instructionDiv">';
+        html += '<div id="instructionText"><p>' + instructionPages[i].text + ' Press enter to continue.</p></div>';
+        html += '<svg id="instructionImageContainer">' +
+                  '<image xlink:href="instructionImages/' + instructionPages[i].image + '.png" width="100%" height="900px" x="0" y="0">' +
+                '</svg>';
+        html += '</div>'
+        pages.push(html);
+      }
+      return pages;
     }
 
     function collectRowsIntoTrials(rows, callback) {

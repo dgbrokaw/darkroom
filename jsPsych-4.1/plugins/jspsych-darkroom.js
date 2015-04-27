@@ -23,6 +23,7 @@ They will record their feelings about the relation between the specified object 
 				var trial = {};
 				var stimulus = params.stimuli[i];
 
+				trial.trialNum = i+1;
 				trial.stimulusNum = stimulus.stimulusNum;
 				trial.options = stimulus.options;
 				trial.independentShapes = stimulus.independentShapes;
@@ -42,6 +43,8 @@ They will record their feelings about the relation between the specified object 
 
 			var reveals = [];
 			var trial_data = [];
+			var lastConfidenceLevel = 100
+			   ,lastRandomConfidenceLevel = 100;
 
 			function assignColorsToShapes() {
 				var scale = d3.scale.category20();
@@ -56,9 +59,11 @@ They will record their feelings about the relation between the specified object 
 			function initializeHTML() {
 				display_element.html(darkroom_html);
 
-				if (trial.options.sliderForRandom && trial.patterns[0].description==='Random') {
-					trial.patterns.splice(0, 1);
-				}
+				d3.select('#trialNum').text(trial.trialNum + (trial.trialNum===6 ? ' Feel free to take a break.' : ''));
+
+				// if (trial.options.sliderForRandom && trial.patterns[0].description==='Random') {
+				// 	trial.patterns.splice(0, 1);
+				// }
 				displayListOfPatternImages(trial.patterns);
 
 				disableRandomSlider(trial.options.sliderForRandom);
@@ -146,27 +151,31 @@ They will record their feelings about the relation between the specified object 
 			}
 
 			function updateConfidence(confidenceValue) {
+				d3.select('#confidence').property('value', confidenceValue);
+
 				if (trial.options.showSliderNumericFeedback) {
 					d3.select('#confidence-value').text(confidenceValue);
-					d3.select('#confidence').property('value', confidenceValue);
 				} else {
-					d3.select('#confidence-value').text('');
+					d3.select('#confidenceLabel').remove();
+					// d3.select('#confidence-value').text('');
 				}
 			}
 
 			function updateRandomConfidence(confidenceValue) {
+				d3.select('#random-confidence').property('value', confidenceValue);
+
 				if (trial.options.showSliderNumericFeedback) {
 					d3.select('#random-confidence-value').text(confidenceValue);
-					d3.select('#random-confidence').property('value', confidenceValue);
 				} else {
-					d3.select('#random-confidence-value').text('');
+					d3.select('#randomConfidenceLabel').remove();
+					// d3.select('#random-confidence-value').text('');
 				}
 			}
 
 			function setupPatternListButtonListener() {
 				if (trial.options.listPatternImages) {
 					d3.select('#patternListButton').on('click', function() {
-						appendPatternListDiv();
+						appendHelpDiv();
 						displayListOfPatternImages(trial.patterns);
 					});
 				} else {
@@ -174,21 +183,28 @@ They will record their feelings about the relation between the specified object 
 				}
 			}
 
-			function appendPatternListDiv() {
+			function setupInstructionsButtonListener() {
+				d3.select('#instructionsButton').on('click', function() {
+					appendHelpDiv();
+					displayInstructions();
+				})
+			}
+
+			function appendHelpDiv() {
 				var div = d3.select('body').insert('div', ':first-child')
-					.attr('id', 'patternListDiv');
+					.attr('id', 'helpDiv');
 
 				var button = div.append('button')
-					.attr('id', 'closePatternListButton')
+					.attr('id', 'closeHelpButton')
 					.text('X');
 
 				button.on('click', function() {
 					div.remove();
-				})
+				});
 			}
 
 			function displayListOfPatternImages(patterns) {
-				var container = d3.select('#patternListDiv');
+				var container = d3.select('#helpDiv');
 
 				patternPreviews = container.selectAll('div')
 					.data(patterns).enter()
@@ -203,6 +219,22 @@ They will record their feelings about the relation between the specified object 
 						.attr('x', '0px')
 						.attr('y', '0px')
 						.attr('xlink:href', function(d) {return 'patternImages/'+d.image});
+			}
+
+			function displayInstructions() {
+				var container = d3.select('#helpDiv');
+
+				var instructions = [
+					'Here is a sentence.'
+				, 'Here is a longer sentence.  I need to write a little more so it will fill more than one line.  Hopefully this will be easy and I don\'t have to fuck with it.'
+				];
+
+				for (var i=0; i<instructions.length; i++) {
+					container.append('p')
+						.classed('instructionsParagraph', true)
+						.text(instructions[i])
+						.attr('font-size', '12pt');
+				}
 			}
 
 			// these following setups are associated with the 'advance' button
@@ -460,9 +492,18 @@ They will record their feelings about the relation between the specified object 
 			setupShapeButtons();
 			setupFormListener();
 			setupPatternListButtonListener();
+			setupInstructionsButtonListener();
 			setupShowMeMoreButtonListener();
 
 			function submitImpression(reveals, pattern, confidence, randomConfidence) {
+				if (parseInt(confidence)===lastConfidenceLevel || parseInt(randomConfidence)===lastRandomConfidenceLevel) {
+					d3.select('#pleaseAdjustSliders').text('Please adjust both sliders.');
+					return;
+				} else {
+					lastConfidenceLevel = parseInt(confidence);
+					lastRandomConfidenceLevel = parseInt(randomConfidence);
+					d3.select('#pleaseAdjustSliders').text('');
+				}
 				d3.select('#submit').style('background', '#eaeaea')
 				console.log(reveals, pattern, confidence, randomConfidence);
 				trial_data.push({subjectID: subject_id
@@ -481,6 +522,7 @@ They will record their feelings about the relation between the specified object 
 		}
 
 	 var darkroom_html =
+	 		"<div id='trialNum'></div>" +
 			"<div class='darkroomArea' id='darkroomArea1'>" +
 	  		"<div class='buttonArea' id='buttonArea1'></div>" +
 	  		"<svg class='darkroom' id='darkroom1'></svg>" +
@@ -490,47 +532,53 @@ They will record their feelings about the relation between the specified object 
 	  		"<svg class='darkroom' id='darkroom2'></svg>" +
 	  	"</div>" +
 	  	"<div class='clear'></div>" +
+
 	  	"<div class='responseArea'>" +
 	  		"<div class='responses'>" +
 		  		"<div id='patternImageDiv'>" +
 		  			"<svg id='patternImageContainer'></svg>" +
 		  		"</div>" +
   				"<div id='patternSelectionDiv'>" +
-  					"<p><strong><ins>Select pattern:</ins></strong></p>" +
+  					"<p style='font-size:10pt'><strong><ins>Select pattern:</ins></strong></p>" +
 	  				"<select id='patternSelection'></select>" +
   				"</div>" +
   				"<div id='confidenceSelectionDiv'>" +
-  					"<p><strong><ins>How confident are you?</ins></strong></p>" +
+  					"<p style='font-size:10pt'><strong><ins>How confident are you this is the pattern?</ins></strong></p>" +
   					"<p style='font-size:10pt'>" +
-  						"<i>I'm only guessing.</i>" +
-  						"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block; margin-left: 5%; margin-right: 5%'></input>" +
-  						"<i>I'm certain.</i>" +
+  						"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block; width: 80%; margin-left: 10%'></input>" +
+  						"<p><div class='sliderLimitDescription' style='float: left'><i>I'm only guessing.</i></div>" +
+  						"<div class='sliderLimitDescription' style='float: right'><i>I'm certain.</i></div></p>" +
   					"</p>" +
-	  				"<label for='confidence'>" +
+	  				"<label id='confidenceLabel' for='confidence'>" +
 	  				  "Confidence = <span id='confidence-value' style='display: inline-block; margin: auto'>…</span>" +
 	  				"</label>" +
   				"</div>" +
   				"<div id='randomSelectionDiv'>" +
-  					"<p><strong><ins>How confident are you this is random?</ins></strong></p>" +
-  					"<p style='font-size:10pt'>" +
-  						"<i>I'm only guessing.</i>" +
-  						"<input type='range' id='random-confidence' min='0' max='100' step='1' style='display: inline-block; margin-left: 5%; margin-right: 5%'></input>" +
-  						"<i>I'm certain.</i>" +
+  					"<p style='font-size:10pt'><strong><ins>How likely do you think this is to be random?</ins></strong></p>" +
+  					"<p>" +
+  						"<input type='range' id='random-confidence' min='0' max='100' step='1' style='display: inline-block; width: 80%; margin-left: 10%'></input>" +
+  						"<p><div class='sliderLimitDescription' style='float: left'><i>There's definitely a pattern.</i></div>" +
+  						"<div class='sliderLimitDescription' style='float: right'><i>Definitely random.</i></div></p>" +
   					"</p>" +
-  					"<label for='random'>" +
+  					"<label id='randomConfidenceLabel' for='random'>" +
   						"Random confidence = <span id='random-confidence-value' style='display: inline-block; margin: auto'>...</span>" +
   					"</label>" +
   				"</div>" +
   				"<div id='submitButtonDiv'>" +
+	  				"<div id='pleaseAdjustSliders' style='font-size: 10pt; width: 40%; float: left; margin-left: 5%'></div>" +
   					"<button style='float: right; width: 40%; margin-right: 5%' id='submit'>Submit</button>" +
   				"</div>" +
 	  		"</div>" +
 	  	"</div>" +
+
 	  	"<div id='patternListButtonDiv'>" +
-	  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: left;' id='patternListButton'>Patterns</button>" +
+	  		"<button style='margin-top: 2%; margin-left: 2%; width: 30%; height: 4%; float: left;' id='patternListButton'>Patterns</button>" +
+	  	"</div>" +
+	  	"<div id='instructionsButtonDiv'>" +
+	  		"<button style='margin-top: 2%; margin-left: 2%; width: 30%; height: 4%; float: left;' id='instructionsButton'>Instructions</button>" +
 	  	"</div>" +
 	  	"<div id='advanceButtonDiv'>" +
-	  		"<button style='margin-top: 2%; margin-left: 2%; width: 45%; height: 4%; float: right;' id='advance'>Show me more</button>" +
+	  		"<button style='margin-top: 2%; margin-left: 2%; width: 30%; height: 4%; float: right;' id='advance'>Show me more</button>" +
 	  	"</div>";
 
 		return plugin;
