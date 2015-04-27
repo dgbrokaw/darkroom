@@ -9,10 +9,10 @@ instructionPages = [
 	]
  ,[
 
-	  {text: 'Try to figure out the pattern before all the shapes have been revealed.'
+	  {text: '<p>You will reveal objects by clicking the "Show me more" button. The boxes above the dark areas will highlight to show there are new objects.</p><p></br>Each time a full pair is revealed, and you are required to select the most likely pattern from the dropdown menu and to indicate your level of confidence in the selected pattern. You will continue revealing objects and updating your pattern and confidence selections until all shapes have been revealed.</p><p></br>At any time you may view the eight patterns by pressing the "VIEW PATTERNS" button. The patterns will be shown in a pop up window. You must close this window to return to the trials. An image describing your presently selected pattern will appear at the bottom left side of the screen.</p>'
 	  ,image: 'maybePattern'}
 
-	 ,{text: 'Can you tell what the pattern is?'
+	 ,{text: '<p>When all of the objects have been revealed you will have one final chance to update your selections. Then press the "Go to the next area" button to begin the next trial.</p><p></br>There are 10 total trials to complete, which is expected to take 30 minutes. Although, you may take up to 6 minutes per trial for a maximum of 1 hr.</p><p></br>Your pattern selections and confidence levels will be evaluated for probabilistic accuracy and appropriateness accounting for the information presented to you at each turn.</p>'
 	  ,image: 'sizePattern'}
 
 	]

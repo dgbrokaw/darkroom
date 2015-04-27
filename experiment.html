@@ -19,7 +19,7 @@
 
     subject_id = uid().substr(1,6).toUpperCase();
 
-    var testMode = true;
+    var testMode = false;
     var options = {
         listPatternImages: true
       , showSliderNumericFeedback: false
@@ -73,6 +73,21 @@
      ,text: setupInstructionPages(instructionPages[0])
     }
 
+    var pattern_instructions = {
+      type: 'text'
+     ,text: 'stuff' // MAKE PAGE WITH PATTERNS N STUFF
+    }
+
+    var instruction_block2 = {
+      type: 'text'
+     ,text: setupInstructionPages(instructionPages[1])
+    }
+
+    var get_ready_trial = {
+      type: 'text'
+     ,text: '<div id="instructionDiv"><div id="instructionText">You will now begin the experiment.<p>Press enter to begin.</div></div>'
+    }
+
     var darkroom_block = {
     	type: 'darkroom'
      ,stimuli: []
@@ -81,7 +96,7 @@
     function startExperiment(mainTrials) {
         darkroom_block.stimuli = testMode ? mainTrials : shuffle(mainTrials).slice(10);
 
-        var timeline = testMode ? [darkroom_block] : [welcome_trial, pre_instruction_trial, instruction_block1, darkroom_block];
+        var timeline = testMode ? [darkroom_block] : [welcome_trial, pre_instruction_trial, instruction_block1, instruction_block2, get_ready_trial, darkroom_block];
 
         jsPsych.init({
             experiment_structure: timeline

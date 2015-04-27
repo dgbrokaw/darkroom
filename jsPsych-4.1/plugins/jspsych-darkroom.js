@@ -59,7 +59,7 @@ They will record their feelings about the relation between the specified object 
 			function initializeHTML() {
 				display_element.html(darkroom_html);
 
-				d3.select('#trialNum').text(trial.trialNum + (trial.trialNum===6 ? ' Feel free to take a break.' : ''));
+				d3.select('#trialNum').text(trial.trialNum + (trial.trialNum===6 ? ' Feel free to take a 5 minute break.' : ''));
 
 				// if (trial.options.sliderForRandom && trial.patterns[0].description==='Random') {
 				// 	trial.patterns.splice(0, 1);
