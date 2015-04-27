@@ -226,8 +226,11 @@ They will record their feelings about the relation between the specified object 
 				var container = d3.select('#helpDiv');
 
 				var instructions = [
-					'Here is a sentence.'
-				, 'Here is a longer sentence.  I need to write a little more so it will fill more than one line.  Hopefully this will be easy and I don\'t have to fuck with it.'
+					'Hover the mouse over an object for a description of its features.'
+				 ,'Choose the pattern you think is being shown in the drop-down menu.'
+				 ,'You must adjust the slider before being able to submit your response.'
+				 ,'Click submit once you have made your decision.  You can submit any number of responses you want, but you must submit at least one response each time you reveal more objects.'
+				 ,'When all the objects have been revealed, and you have submitted a final response, you may continue to the next area by clicking the "Go to the next area" button.'
 				];
 
 				for (var i=0; i<instructions.length; i++) {
@@ -497,7 +500,7 @@ They will record their feelings about the relation between the specified object 
 			setupShowMeMoreButtonListener();
 
 			function submitImpression(reveals, pattern, confidence, randomConfidence) {
-				if (parseInt(confidence)===lastConfidenceLevel ) {//|| parseInt(randomConfidence)===lastRandomConfidenceLevel) {
+				if (parseInt(confidence)===lastConfidenceLevel) {//|| parseInt(randomConfidence)===lastRandomConfidenceLevel) {
 					d3.select('#pleaseAdjustSliders').text('Please adjust the slider.');
 					return;
 				} else {
