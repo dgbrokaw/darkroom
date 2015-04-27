@@ -10,6 +10,10 @@ p {
 	margin: 0;
 }
 
+#instructionDiv {
+	height: 100%;
+}
+
 #instructionText {
 	margin: 5%;
 }

@@ -75,6 +75,11 @@
      ,text: '<div id="instructionDiv"><div id="instructionText">Be sure to read the instructions <i>carefully</i> because they contain important information about the job you must complete.<p>Press enter to begin.</div></div>'
     }
 
+    var instruction_block0 = {
+      type: 'text'
+     ,text: setupInstructionPages(instructionPages[0])
+    }
+
     var shape_instructions = {
       type: 'text'
      ,text: "<div id='instructionDiv'><div id='instructionText'>Each object in a pair may be described by three types of features: shape, size, and fill.<img src='instructionImages/Shapes.png' height='90%' width='90%'></div><div id='instructionText'>Remember, the color and position of any object are used only to indicate membership in a pair across the screens.</div></div>"
@@ -82,7 +87,7 @@
 
     var instruction_block1 = {
     	type: 'text'
-     ,text: setupInstructionPages(instructionPages[0])
+     ,text: setupInstructionPages(instructionPages[1])
     }
 
     var pattern_instructions = {
@@ -92,7 +97,7 @@
 
     var instruction_block2 = {
       type: 'text'
-     ,text: setupInstructionPages(instructionPages[1])
+     ,text: setupInstructionPages(instructionPages[2])
     }
 
     var get_ready_trial = {
@@ -105,17 +110,22 @@
      ,stimuli: []
     }
 
+    var exit_trial = {
+      type: 'text'
+     ,text: '<div id="instructionDiv"><div id="instructionText">The experiment is over.  Thank you very much for participating.</div></div>'
+    }
+
     function startExperiment(mainTrials) {
         darkroom_block.stimuli = testMode ? mainTrials : shuffle(mainTrials).slice(0, 5);
 
-        var timeline = testMode ? [darkroom_block] : [welcome_trial, pre_instruction_trial, shape_instructions, instruction_block1, pattern_instructions, instruction_block2, get_ready_trial, darkroom_block];
+        var timeline = testMode ? [darkroom_block] : [welcome_trial, pre_instruction_trial, instruction_block0, shape_instructions, instruction_block1, pattern_instructions, instruction_block2, get_ready_trial, darkroom_block];
 
         jsPsych.init({
             experiment_structure: timeline
 
             ,on_finish: function() {
                 console.log(jsPsych.data.getData());
-                jsPsych.data.localSave('darkroom_data.json', 'json', {});
+                jsPsych.data.localSave('darkroom_data_' + subject_id + '.json', 'json', {});
             }
         });
     }
@@ -146,9 +156,11 @@
       for (var i=0; i<instructionPages.length; i++) {
         var html = '<div id="instructionDiv">';
         html += '<div id="instructionText"><p>' + instructionPages[i].text + '</p></div>';
-        html += '<svg id="instructionImageContainer">' +
-                  '<image xlink:href="instructionImages/' + instructionPages[i].image + '.png" width="100%" height="900px" x="0" y="0">' +
-                '</svg>';
+        if (instructionPages[i].image) {
+          html += '<svg id="instructionImageContainer">' +
+                    '<image xlink:href="instructionImages/' + instructionPages[i].image + '.png" width="100%" height="900px" x="0" y="0">' +
+                  '</svg>';
+        }
         html += '<p style="float: right; margin-top: 5%">Press enter to continue.</p>'
         html += '</div>'
         pages.push(html);

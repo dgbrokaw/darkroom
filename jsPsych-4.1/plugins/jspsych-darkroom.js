@@ -290,7 +290,7 @@ They will record their feelings about the relation between the specified object 
 				d3.select('#submit').style('background', 'lightgreen');
 			}
 
-			function disableShapeButton(shape) {
+			function highlightShapeButton(shape, color) {
 				var buttonID = '#button-';
 				if (shape.isIndependent) {
 					buttonID += '1-'
@@ -299,28 +299,32 @@ They will record their feelings about the relation between the specified object 
 				}
 				buttonID += shape.pairNum;
 
-				d3.select(buttonID).style({'background': 'ghostwhite'});
+				d3.select(buttonID).style({'background': color});
 			}
 
 			function revealShapes() {
-				var newIndependentShape = getUnusedRandomShape(trial.independentShapes)
-				   ,newDependentShape = getUnusedRandomShape(trial.dependentShapes);
+				revealRandomShapeOnSide('left');
+			}
 
-				disableShapeButton(newIndependentShape);
-				disableShapeButton(newDependentShape);
+			function revealRandomShapeOnSide(side, lastShape) {
+				var newShape = getUnusedRandomShape(side==='left' ? trial.independentShapes : trial.dependentShapes);
 
-				revealShape(newIndependentShape);
-				revealShape(newDependentShape);
+				highlightShapeButton(newShape, 'lightgreen');
 
-				while (!aNewCompletePairHasBeenRevealed(newIndependentShape, newDependentShape)) {
-					newIndependentShape = getUnusedRandomShape(trial.independentShapes)
-				 ,newDependentShape = getUnusedRandomShape(trial.dependentShapes);
+				revealShape(newShape);
 
-					disableShapeButton(newIndependentShape);
-					disableShapeButton(newDependentShape);
-
-					revealShape(newIndependentShape);
-					revealShape(newDependentShape);
+				if (side==='left') {
+					setTimeout(function() {
+						highlightShapeButton(newShape, 'ghostwhite');
+						revealRandomShapeOnSide('right', newShape);
+					}, 1000);
+				} else if (!aNewCompletePairHasBeenRevealed(newShape, lastShape)) {
+					setTimeout(function() {
+						highlightShapeButton(newShape, 'ghostwhite');
+						revealRandomShapeOnSide('left');
+					}, 1000);
+				} else {
+					highlightShapeButton(newShape, 'ghostwhite');
 				}
 			}
 
