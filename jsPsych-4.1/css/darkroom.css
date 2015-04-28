@@ -87,7 +87,7 @@ p {
 
 #patternSelectionDiv, #confidenceSelectionDiv, #randomSelectionDiv {
 	width: 48%;
-	height: 25%;
+	height: 30%;
 	margin-left: 2%;
 	margin-bottom: 1%;
 	display: inline-block;

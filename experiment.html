@@ -116,7 +116,7 @@
     }
 
     function startExperiment(mainTrials) {
-        darkroom_block.stimuli = testMode ? mainTrials : shuffle(mainTrials).slice(0, 10);
+        darkroom_block.stimuli = testMode ? mainTrials.slice(0, 1) : shuffle(mainTrials).slice(0, 10);
 
         var timeline = testMode ? [darkroom_block] : [welcome_trial, pre_instruction_trial, instruction_block0, shape_instructions, instruction_block1, pattern_instructions, instruction_block2, get_ready_trial, darkroom_block];
 

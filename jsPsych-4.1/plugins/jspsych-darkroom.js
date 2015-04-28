@@ -145,7 +145,7 @@ They will record their feelings about the relation between the specified object 
 				})
 
 				d3.select('#submit').on('click', function() {
-					submitImpression(reveals
+					submitImpression(reveals.slice()
 												 	,d3.select('#patternSelection').property('value')
 												 	,d3.select('#confidence').property('value'));
 												 	// ,d3.select('#random-confidence').property('value'));
@@ -268,7 +268,7 @@ They will record their feelings about the relation between the specified object 
 				button.style({'background': 'lightgreen'});
 
 				button.on('click', function() {
-					submitImpression(reveals
+					submitImpression(reveals.slice()
 												 	,d3.select('#patternSelection').property('value')
 												 	,d3.select('#confidence').property('value'));
 												 	// ,d3.select('#random-confidence').property('value'));
@@ -556,7 +556,8 @@ They will record their feelings about the relation between the specified object 
 	  				"<select id='patternSelection'></select>" +
   				"</div>" +
   				"<div id='confidenceSelectionDiv'>" +
-  					"<p style='font-size:10pt'><strong><ins>How confident are you this is the pattern?</ins></strong></p>" +
+  					// "<p style='font-size:10pt'><strong><ins>How confident are you this is the pattern?</ins></strong></p>" +
+  					"<p style='font-size:10pt'><strong><ins>How confident are you that all of the objects (including the unrevealed objects) will follow this pattern?</ins></strong></p>" +
   					"<p style='font-size:10pt'>" +
   						"<input type='range' id='confidence' min='0' max='100' step='1' style='display: inline-block; width: 80%; margin-left: 10%'></input>" +
   						"<p><div class='sliderLimitDescription' style='float: left'><i>I'm only guessing.</i></div>" +
