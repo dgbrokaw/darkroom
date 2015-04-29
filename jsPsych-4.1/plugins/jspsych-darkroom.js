@@ -45,6 +45,7 @@ They will record their feelings about the relation between the specified object 
 			var trial_data = [];
 			var lastConfidenceLevel = 100;
 			var oneSubmission = false;
+			var displayingShapes = false;
 			   // ,lastRandomConfidenceLevel = 100;
 
 			function assignColorsToShapes() {
@@ -253,6 +254,9 @@ They will record their feelings about the relation between the specified object 
 				button.style({'background': 'lightgreen'});
 
 				button.on('click', function() {
+					if (displayingShapes) {
+						return;
+					}
 					disableShowMeMoreButton(this);
 					revealShapes();
 				});
@@ -303,6 +307,7 @@ They will record their feelings about the relation between the specified object 
 			}
 
 			function revealShapes() {
+				displayingShapes = true;
 				revealRandomShapeOnSide('left');
 			}
 
@@ -325,6 +330,7 @@ They will record their feelings about the relation between the specified object 
 					}, 1000);
 				} else {
 					highlightShapeButton(newShape, 'ghostwhite');
+					displayingShapes = false;
 				}
 			}
 
